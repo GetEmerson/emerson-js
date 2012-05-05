@@ -1,0 +1,5 @@
+.gemset
+.rspec
+.rvmrc
+bootstrap.gems
+node_modules
