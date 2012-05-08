@@ -11,7 +11,11 @@
 #   - dist/**/*.js
 #
 src_files:
-    - lib/**/*.js
+  - lib/vendor/**/*.js
+  - lib/emerson.js
+  - lib/emerson/util.js
+  - lib/emerson/**/*.js
+  - lib/**/*.js
 
 # stylesheets
 #
@@ -37,6 +41,7 @@ stylesheets:
 #   - helpers/**/*.js
 #
 helpers:
+  - helpers/**/*.js
 
 # spec_files
 #
@@ -70,4 +75,4 @@ src_dir:
 #
 # spec_dir: spec/javascripts
 #
-spec_dir: spec/lib
+spec_dir: spec
