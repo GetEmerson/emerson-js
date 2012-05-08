@@ -3,16 +3,16 @@ require 'rubygems'
 task :default => :spec
 
 desc "run the spec suite"
-task :spec => ['spec:server', 'spec:browser']
+task :spec => [:'spec:server', :'spec:browser']
 
 desc "run the 'server' spec suite"
-task 'spec:server' do
+task :'spec:server' do
   check 'jasmine-node', 'jasmine-node', 'https://github.com/mhevery/jasmine-node'
   system 'jasmine-node spec'
 end
 
 desc "run the 'browser' spec suite"
-task 'spec:browser' => 'jasmine:server'
+task :'spec:browser' => :'jasmine:server'
 
 desc "build the docco documentation"
 task :doc do
@@ -21,7 +21,13 @@ task :doc do
   # this is also specified as a dev dependency in package.json
   check 'docco',      'docco',    'https://github.com/jashkenas/docco'
   check 'pygmentize', 'pygments', 'http://pygments.org/'
-  system 'docco -t ./spec/support/docco/template.jst ./lib/*.js'
+  system 'docco -t ./spec/support/docco/template.jst ./lib/emerson.js ./lib/emerson/*.js'
+end
+
+desc "serve the docco documentation"
+task :'doc:serve' => :doc do
+  check 'serve-this', 'serve-this', 'https://github.com/matthewrudy/serve-this'
+  system 'cd docs && serve-this'
 end
 
 # Check for the existence of an executable.
