@@ -44,13 +44,6 @@ describe("Emerson.view", function() {
       html = fixture('views/blank.html');
     });
 
-    it("calls #initialize", function() {
-      spyOn(view.fn, 'initialize');
-
-      instance = $(html).view();
-      expect(view.fn.initialize).toHaveBeenCalled();
-    });
-
     it("returns an object which is baselib-wrapped", function() {
       instance = $(html).view();
       expect(instance.selector).toBeDefined();
@@ -59,6 +52,56 @@ describe("Emerson.view", function() {
     it("returns an object which is no longer view-decorated", function() {
       instance = $(html).view();
       expect(instance.initialize).not.toBeDefined();
+    });
+
+    describe("given a view match", function() {
+      it("calls #initialize", function() {
+        spyOn(view.fn, 'initialize');
+
+        instance = $(html).view();
+        expect(view.fn.initialize).toHaveBeenCalled();
+      });
+    });
+
+    describe("given a trait match", function() {
+      before(function() {
+        view = fixture('views/shared/blank-trait.js');
+        html = fixture('views/shared/blank-trait.html');
+      });
+
+      it("calls #initialize", function() {
+        spyOn(view.fn, 'initialize');
+
+        instance = $(html).view();
+        expect(view.fn.initialize).toHaveBeenCalled();
+      });
+    });
+
+    describe("given multiple trait matches", function() {
+      var view_1, view_2, html, intance;
+
+      before(function() {
+        view_1 = fixture('views/shared/blue-trait.js');
+        view_2 = fixture('views/shared/bold-trait.js');
+        html   = fixture('views/shared/dual-trait.html');
+      });
+
+      it("calls #initialize for both traits", function() {
+        spyOn(view_1.fn, 'initialize');
+        spyOn(view_2.fn, 'initialize');
+
+        instance = $(html).view();
+        expect(view_1.fn.initialize).toHaveBeenCalled();
+        expect(view_2.fn.initialize).toHaveBeenCalled();
+      });
+
+      it("receives modification from both traits", function() {
+        instance = $(html).view();
+        expect(instance).toHaveCss({
+          'color'       : 'blue',
+          'font-weight' : 'bold'
+        });
+      });
     });
   });
 });

@@ -37,7 +37,7 @@ else {
       var loader = $[prefix.replace(/s$/, '')]; // simple singular
 
       if(ext === 'js' && loader) {
-        result = loader(key);
+        result = loader(key) || loader(parseKey(result));
       }
 
       return result;
@@ -51,4 +51,8 @@ else {
       return jasmine.getEnv().afterEach(callback);
     }
   });
+
+  function parseKey(content) {
+    return /define\(["']([a-z:_-]+)["']/.exec(content)[1];
+  }
 })(this);

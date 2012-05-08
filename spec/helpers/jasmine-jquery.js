@@ -262,6 +262,22 @@
           }
         }
         return false;
+      },
+
+      toHaveCss: function(expected) {
+        var element = this.actual;
+        var pass    = true;
+        var dummy   = $('<p>');
+
+        var result = $.each(expected, function(key, value) {
+          dummy.css(key, value);
+
+          if(element.css(key) !== dummy.css(key)) {
+            return pass = false;
+          }
+        });
+
+        return pass;
       }
     };
 
