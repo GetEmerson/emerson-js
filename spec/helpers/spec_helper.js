@@ -1,6 +1,19 @@
 // server
-if(typeof require !== 'undefined') {
-  Emerson = require("../../lib/emerson.js");
+if(typeof exports !== 'undefined') {
+  function req(lib) {
+    try {
+      return require(lib);
+    }
+    catch(e) {
+      return require("../../lib/" + lib + ".js");
+    }
+  }
+
+  _       = req("underscore");
+  $       = req("jquery");
+  Emerson = req("emerson");
+            req("emerson/util");
+            req("emerson/mien");
 }
 // browser
 else {
