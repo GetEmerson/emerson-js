@@ -1,26 +1,41 @@
-var readFixtures = function() {
+// jasmine-jquery version 1.3.1
+// patched by Corey Innis to support add support for Zepto or Ender.
+(function(supportedLibs) {
+var $, $name, i, n;
+
+for(i = 0, n = supportedLibs.length; i < n; i ++) {
+  $name = supportedLibs[i];
+  $     = window[$name];
+
+  if($) {
+    break;
+  }
+}
+
+// "this" is the global object (window in the browser).
+this.readFixtures = function() {
   return jasmine.getFixtures().proxyCallTo_('read', arguments);
 };
 
-var preloadFixtures = function() {
+this.preloadFixtures = function() {
   jasmine.getFixtures().proxyCallTo_('preload', arguments);
 };
 
-var loadFixtures = function() {
+this.loadFixtures = function() {
   jasmine.getFixtures().proxyCallTo_('load', arguments);
 };
 
-var setFixtures = function(html) {
+this.setFixtures = function(html) {
   jasmine.getFixtures().set(html);
 };
 
-var sandbox = function(attributes) {
+this.sandbox = function(attributes) {
   return jasmine.getFixtures().sandbox(attributes);
 };
 
-var spyOnEvent = function(selector, eventName) {
-  jasmine.JQuery.events.spyOn(selector, eventName);
-};
+this.spyOnEvent = function(selector, eventName) {
+  jasmine[$name].events.spyOn(selector, eventName);
+}
 
 jasmine.getFixtures = function() {
   return jasmine.currentFixtures_ = jasmine.currentFixtures_ || new jasmine.Fixtures();
@@ -62,23 +77,23 @@ jasmine.Fixtures.prototype.clearCache = function() {
 };
 
 jasmine.Fixtures.prototype.cleanUp = function() {
-  jQuery('#' + this.containerId).remove();
+  $('#' + this.containerId).remove();
 };
 
 jasmine.Fixtures.prototype.sandbox = function(attributes) {
   var attributesToSet = attributes || {};
-  return jQuery('<div id="sandbox" />').attr(attributesToSet);
+  return $('<div id="sandbox" />').attr(attributesToSet);
 };
 
 jasmine.Fixtures.prototype.createContainer_ = function(html) {
   var container;
-  if(html instanceof jQuery) {
-    container = jQuery('<div id="' + this.containerId + '" />');
+  if(html.selector !== undefined) {
+    container = $('<div id="' + this.containerId + '" />');
     container.html(html);
   } else {
     container = '<div id="' + this.containerId + '">' + html + '</div>'
   }
-  jQuery('body').append(container);
+  $('body').append(container);
 };
 
 jasmine.Fixtures.prototype.getFixtureHtml_ = function(url) {
@@ -89,11 +104,25 @@ jasmine.Fixtures.prototype.getFixtureHtml_ = function(url) {
 };
 
 jasmine.Fixtures.prototype.loadFixtureIntoCache_ = function(relativeUrl) {
-  var url = this.fixturesPath.match('/$') ? this.fixturesPath + relativeUrl : this.fixturesPath + '/' + relativeUrl;
-  var request = new XMLHttpRequest();
-  request.open("GET", url + "?" + new Date().getTime(), false);
-  request.send(null);
-  this.fixturesCache_[relativeUrl] = request.responseText;
+  var self = this;
+  var url  = this.fixturesPath.match('/$') ? this.fixturesPath + relativeUrl : this.fixturesPath + '/' + relativeUrl;
+  var ext  = relativeUrl.split('.').pop();
+  var type = (ext === 'js') ? 'script' : ext;
+
+  $.ajax({
+    async    : false, // must be synchronous to guarantee that no tests are run before fixture is loaded
+    cache    : false,
+    dataType : type,
+    url      : url,
+
+    success : function(data) {
+      self.fixturesCache_[relativeUrl] = data;
+    },
+
+    error : function(jqXHR, status, errorThrown) {
+        throw Error('Fixture could not be loaded: ' + url + ' (status: ' + status + ', message: ' + errorThrown.message + ')');
+    }
+  });
 };
 
 jasmine.Fixtures.prototype.proxyCallTo_ = function(methodName, passedArguments) {
@@ -101,17 +130,25 @@ jasmine.Fixtures.prototype.proxyCallTo_ = function(methodName, passedArguments) 
 };
 
 
-jasmine.JQuery = function() {};
+jasmine[$name] = function() {};
 
-jasmine.JQuery.browserTagCaseIndependentHtml = function(html) {
-  return jQuery('<div/>').append(html).html();
+jasmine[$name].browserTagCaseIndependentHtml = function(html) {
+  return $('<div/>').append(html).html();
 };
 
-jasmine.JQuery.elementToString = function(element) {
-  return jQuery('<div />').append($(element).clone()).html();
+jasmine[$name].elementToString = function(element) {
+  if(element.clone) {
+    return $('<div />').append(element.clone()).html();
+  }
+  else {
+    // NOTE: we're not cloning here (for ender built with bonzo), so there
+    // *could* be some issue.  bonzo uses cloning in its #appendTo definition
+    // which could be another option.
+    return $('<div />').append(element).html();
+  }
 };
 
-jasmine.JQuery.matchersClass = {};
+jasmine[$name].matchersClass = {};
 
 (function(namespace) {
   var data = {
@@ -124,7 +161,7 @@ jasmine.JQuery.matchersClass = {};
       var handler = function(e) {
         data.spiedEvents[[selector, eventName]] = e;
       };
-      jQuery(selector).bind(eventName, handler);
+      $(selector).bind(eventName, handler);
       data.handlers.push(handler);
     },
 
@@ -132,19 +169,15 @@ jasmine.JQuery.matchersClass = {};
       return !!(data.spiedEvents[[selector, eventName]]);
     },
 
-    wasPrevented: function(selector, eventName) {
-      return data.spiedEvents[[selector, eventName]].isDefaultPrevented();
-    },
-
     cleanUp: function() {
       data.spiedEvents = {};
       data.handlers    = [];
     }
   }
-})(jasmine.JQuery);
+})(jasmine[$name]);
 
 (function(){
-  var jQueryMatchers = {
+  var CustomMatchers = {
     toHaveClass: function(className) {
       return this.actual.hasClass(className);
     },
@@ -170,15 +203,11 @@ jasmine.JQuery.matchersClass = {};
     },
 
     toExist: function() {
-      return this.actual.length;
+      return this.actual.size() > 0;
     },
 
     toHaveAttr: function(attributeName, expectedAttributeValue) {
       return hasProperty(this.actual.attr(attributeName), expectedAttributeValue);
-    },
-
-    toHaveProp: function(propertyName, expectedPropertyValue) {
-      return hasProperty(this.actual.prop(propertyName), expectedPropertyValue);
     },
 
     toHaveId: function(id) {
@@ -186,15 +215,14 @@ jasmine.JQuery.matchersClass = {};
     },
 
     toHaveHtml: function(html) {
-      return this.actual.html() == jasmine.JQuery.browserTagCaseIndependentHtml(html);
+      return this.actual.html() == jasmine[$name].browserTagCaseIndependentHtml(html);
     },
 
     toHaveText: function(text) {
-      var trimmedText = $.trim(this.actual.text());
-      if (text && jQuery.isFunction(text.test)) {
-        return text.test(trimmedText);
+      if (text && $.isFunction(text.test)) {
+        return text.test(this.actual.text());
       } else {
-        return trimmedText == text;
+        return this.actual.text() == text;
       }
     },
 
@@ -211,15 +239,11 @@ jasmine.JQuery.matchersClass = {};
     },
 
     toContain: function(selector) {
-      return this.actual.find(selector).length;
+      return this.actual.find(selector).size() > 0;
     },
 
     toBeDisabled: function(selector){
       return this.actual.is(':disabled');
-    },
-
-	toBeFocused: function(selector) {
-	  return this.actual.is(':focus');
     },
 
     // tests the existence of a specific event binding
@@ -251,13 +275,10 @@ jasmine.JQuery.matchersClass = {};
   var bindMatcher = function(methodName) {
     var builtInMatcher = jasmine.Matchers.prototype[methodName];
 
-    jasmine.JQuery.matchersClass[methodName] = function() {
-      if (this.actual
-          && (this.actual instanceof jQuery
-             || jasmine.isDomNode(this.actual))) {
-        this.actual = $(this.actual);
-        var result = jQueryMatchers[methodName].apply(this, arguments);
-        this.actual = jasmine.JQuery.elementToString(this.actual);
+    jasmine[$name].matchersClass[methodName] = function() {
+      if (this.actual.selector !== undefined) {
+        var result = CustomMatchers[methodName].apply(this, arguments);
+        this.actual = jasmine[$name].elementToString(this.actual);
         return result;
       }
 
@@ -269,38 +290,28 @@ jasmine.JQuery.matchersClass = {};
     };
   };
 
-  for(var methodName in jQueryMatchers) {
+  for(var methodName in CustomMatchers) {
     bindMatcher(methodName);
   }
 })();
 
 beforeEach(function() {
-  this.addMatchers(jasmine.JQuery.matchersClass);
+  this.addMatchers(jasmine[$name].matchersClass);
   this.addMatchers({
     toHaveBeenTriggeredOn: function(selector) {
       this.message = function() {
         return [
-          "Expected event " + this.actual + " to have been triggered on " + selector,
-          "Expected event " + this.actual + " not to have been triggered on " + selector
+          "Expected event " + this.actual + " to have been triggered on" + selector,
+          "Expected event " + this.actual + " not to have been triggered on" + selector
         ];
       };
-      return jasmine.JQuery.events.wasTriggered($(selector), this.actual);
+      return jasmine[$name].events.wasTriggered(selector, this.actual);
     }
-  });
-  this.addMatchers({
-    toHaveBeenPreventedOn: function(selector) {
-      this.message = function() {
-        return [
-          "Expected event " + this.actual + " to have been prevented on " + selector,
-          "Expected event " + this.actual + " not to have been prevented on " + selector
-        ];
-      };
-      return jasmine.JQuery.events.wasPrevented(selector, this.actual);
-    }
-  });
+  })
 });
 
 afterEach(function() {
   jasmine.getFixtures().cleanUp();
-  jasmine.JQuery.events.cleanUp();
+  jasmine[$name].events.cleanUp();
 });
+})(['jQuery', 'Zepto', 'ender']);
