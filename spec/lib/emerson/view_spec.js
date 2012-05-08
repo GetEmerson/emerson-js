@@ -54,11 +54,25 @@ describe("Emerson.view", function() {
       expect(instance.initialize).not.toBeDefined();
     });
 
+    it("sets an _emerson id on the DOM node (TODO: handle a multi-object collection)", function() {
+      instance = $(html).view();
+      expect(instance[0]._emerson).toBeGreaterThan(1);
+    });
+
+    it("does not re-decorate on subsequent calls", function() {
+      instance = $(html);
+      spyOn(view.fn, 'initialize');
+
+      instance.view();
+      instance.view();
+      expect(view.fn.initialize.callCount).toEqual(1);
+    });
+
     describe("given a view match", function() {
       it("calls #initialize", function() {
         spyOn(view.fn, 'initialize');
 
-        instance = $(html).view();
+        $(html).view();
         expect(view.fn.initialize).toHaveBeenCalled();
       });
     });
@@ -72,13 +86,13 @@ describe("Emerson.view", function() {
       it("calls #initialize", function() {
         spyOn(view.fn, 'initialize');
 
-        instance = $(html).view();
+        $(html).view();
         expect(view.fn.initialize).toHaveBeenCalled();
       });
     });
 
     describe("given multiple trait matches", function() {
-      var view_1, view_2, html, intance;
+      var view_1, view_2, html, instance;
 
       before(function() {
         view_1 = fixture('views/shared/blue-trait.js');
@@ -90,7 +104,7 @@ describe("Emerson.view", function() {
         spyOn(view_1.fn, 'initialize');
         spyOn(view_2.fn, 'initialize');
 
-        instance = $(html).view();
+        $(html).view();
         expect(view_1.fn.initialize).toHaveBeenCalled();
         expect(view_2.fn.initialize).toHaveBeenCalled();
       });
