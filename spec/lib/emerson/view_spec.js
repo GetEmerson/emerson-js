@@ -5,6 +5,16 @@ describe("Emerson.view", function() {
     });
   });
 
+  describe(".init", function() {
+    it("applies $.fn.view to the <body>", function() {
+      spyOn($.fn, "view");
+
+      Emerson.view.init();
+      expect($.fn.view).toHaveBeenCalled();
+      expect($.fn.view.mostRecentCall.object[0]).toEqual($('body')[0]);
+    });
+  });
+
   describe("$.view", function() {
     var view;
 
