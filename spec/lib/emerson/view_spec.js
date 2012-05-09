@@ -338,7 +338,7 @@ describe("Emerson.view", function() {
       link    = $('a.link', html);
     });
 
-    context("bound via `event : handler`", function() {
+    context("subscribed via `event : handler`", function() {
       var object;
 
       before(function() {
@@ -365,7 +365,7 @@ describe("Emerson.view", function() {
       });
     });
 
-    describe("bound via `'eventOne eventTwo' : handler`", function() {
+    context("subscribed via `'eventOne eventTwo' : handler`", function() {
       before(function() {
         view = Emerson.view('events', {
           subscribe : {
@@ -380,6 +380,25 @@ describe("Emerson.view", function() {
         link.trigger('click');
         link.trigger('mouseover');
         expect(handler.callCount).toEqual(2);
+      });
+    });
+
+    describe("subscribed via `{ 'selector' : { 'event' : handler } }`", function() {
+      before(function() {
+        view = Emerson.view('events', {
+          subscribe : {
+            'a.link' : {
+              click : handler
+            }
+          }
+        });
+
+        instance = html.view();
+      });
+
+      it("works", function() {
+        link.trigger('click');
+        expect(handler).toHaveBeenCalled();
       });
     });
   });
