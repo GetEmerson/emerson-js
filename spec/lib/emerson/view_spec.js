@@ -162,6 +162,34 @@ describe("Emerson.view", function() {
         });
       });
     });
+
+    describe("given multiple DOM matches", function() {
+      var view, html;
+
+      before(function() {
+        view = fixture('views/shared/blue-trait.js');
+        html = fixture('views/shared/dual-trait.html');
+        var one = $(html).attr('id', 'html-1');
+        var two = $(html).attr('id', 'html-2');
+
+        setFixtures(one.add(two));
+        expect($('#html-1')).toBe('article');
+        expect($('#html-2')).toBe('article');
+      });
+
+      it("calls #initialize for both DOM matches", function() {
+        spyOn(view.setup, 'initialize').andCallThrough();
+
+        $('article').view();
+        expect(view.setup.initialize.callCount).toEqual(2);
+      });
+
+      it("modifies both DOM matches", function() {
+        $('article').view();
+        expect($('#html-1')).toHaveCss({ 'color' : 'blue' });
+        expect($('#html-2')).toHaveCss({ 'color' : 'blue' });
+      });
+    });
   });
 
   describe("view inheritance", function() {
@@ -253,6 +281,7 @@ describe("Emerson.view", function() {
           }
         });
 
+        instance = $(html).attr('data-view', 'inherit');
         instance.view();
         expect(instance.data('method')).toEqual('called');
       });

@@ -269,6 +269,10 @@
         var pass    = true;
         var dummy   = $('<p>');
 
+        if(element.closest('body').length) {
+          dummy.appendTo('body');
+        }
+
         var result = $.each(expected, function(key, value) {
           dummy.css(key, value);
 
@@ -277,6 +281,7 @@
           }
         });
 
+        dummy.remove();
         return pass;
       }
     };
