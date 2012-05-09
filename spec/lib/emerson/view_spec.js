@@ -163,4 +163,113 @@ describe("Emerson.view", function() {
       });
     });
   });
+
+  describe("view inheritance", function() {
+    var base, view, html, instance;
+
+    before(function() {
+      base = fixture('views/simple.js');
+      html = fixture('views/simple.html');
+      view = Emerson.view('inherit', {
+        initialize : function() {
+          this.method();
+        }
+      });
+      instance = $(html).attr('data-view', 'inherit');
+    });
+
+    describe("via view.extend", function() {
+      it("works", function() {
+        view.extend(base);
+
+        instance.view();
+        expect(instance.data('method')).toEqual('called');
+      });
+
+      it("allows method overriding", function() {
+        view.extend(base);
+        view.extend({
+          method : function() {
+            this.data('method', 'override');
+          }
+        });
+
+        instance.view();
+        expect(instance.data('method')).toEqual('override');
+      });
+
+      it("provides a mechanism for handling 'super'", function() {
+        view.extend(base);
+        view.extend({
+          method : function() {
+            base.fn.method.call(this);
+          }
+        });
+
+        instance.view();
+        expect(instance.data('method')).toEqual('called');
+      });
+
+      it("does not affect the source definition", function() {
+        view.extend(base);
+        view.extend({
+          method : function() {
+            this.data('method', 'override');
+          }
+        });
+
+        // load "simple" instead of "inherited"
+        instance = $(html).attr('data-view', 'simple');
+        instance.view();
+        expect(instance.data('method')).toEqual('called');
+      });
+    });
+
+    describe("via view.fn.extend", function() {
+      it("works", function() {
+        view.fn.extend(base.fn);
+
+        instance.view();
+        expect(instance.data('method')).toEqual('called');
+      });
+
+      it("allows method overriding", function() {
+        view.fn.extend(base.fn);
+        view.fn.extend({
+          method : function() {
+            this.data('method', 'override');
+          }
+        });
+
+        instance.view();
+        expect(instance.data('method')).toEqual('override');
+      });
+
+      it("provides a mechanism for handling 'super'", function() {
+        view.fn.extend(base.fn);
+        view.fn.extend({
+          method : function() {
+            base.fn.method.call(this);
+          }
+        });
+
+        instance.view();
+        expect(instance.data('method')).toEqual('called');
+      });
+
+      it("does not affect the source definition", function() {
+        view.fn.extend(base.fn);
+        view.fn.extend({
+          method : function() {
+            this.data('method', 'override');
+          }
+        });
+
+        // load "simple" instead of "inherited"
+        instance = $(html).attr('data-view', 'simple');
+        instance.view();
+        expect(instance.data('method')).toEqual('called');
+      });
+    });
+  });
 });
