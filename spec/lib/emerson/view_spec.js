@@ -5,29 +5,6 @@ describe("Emerson.view", function() {
     });
   });
 
-  describe("object definition", function() {
-    var view;
-
-    before(function() {
-      view = fixture('views/blank.js');
-    });
-
-    // TODO: solve for zepto
-    if(typeof jQuery !== 'undefined') {
-      it("has the appropriate constructor", function() {
-        expect(view.constructor.name).toEqual('View');
-      });
-    }
-
-    it("defines #initialize", function() {
-      expect(view.setup.initialize).toBeDefined();
-    });
-
-    it("defines #subscribe", function() {
-      expect(view.setup.subscribe).toBeDefined();
-    });
-  });
-
   describe("$.view", function() {
     var view;
 
@@ -219,205 +196,228 @@ describe("Emerson.view", function() {
     });
   });
 
-  describe("view inheritance", function() {
-    var base, view, html, instance;
+  describe("View", function() {
+    var view;
 
     before(function() {
-      base = fixture('views/simple.js');
-      html = fixture('views/simple.html');
-      view = Emerson.view('inherit', {
-        initialize : function() {
-          this.method();
-        }
-      });
-      instance = $(html).attr('data-view', 'inherit');
+      view = fixture('views/blank.js');
     });
 
-    describe("via view.extend", function() {
-      it("works", function() {
-        view.extend(base);
-
-        instance.view();
-        expect(instance.data('method')).toEqual('called');
+    // TODO: solve for zepto
+    if(typeof jQuery !== 'undefined') {
+      it("has the appropriate constructor", function() {
+        expect(view.constructor.name).toEqual('View');
       });
+    }
 
-      it("allows method overriding", function() {
-        view.extend(base);
-        view.extend({
-          method : function() {
-            this.data('method', 'override');
-          }
-        });
-
-        instance.view();
-        expect(instance.data('method')).toEqual('override');
-      });
-
-      it("provides a mechanism for handling 'super'", function() {
-        view.extend(base);
-        view.extend({
-          method : function() {
-            base.fn.method.call(this);
-          }
-        });
-
-        instance.view();
-        expect(instance.data('method')).toEqual('called');
-      });
-
-      it("does not affect the source definition", function() {
-        view.extend(base);
-        view.extend({
-          method : function() {
-            this.data('method', 'override');
-          }
-        });
-
-        // load "simple" instead of "inherited"
-        instance = $(html).attr('data-view', 'simple');
-        instance.view();
-        expect(instance.data('method')).toEqual('called');
-      });
+    it("defines #initialize", function() {
+      expect(view.setup.initialize).toBeDefined();
     });
 
-    describe("via view.fn.extend", function() {
-      it("works", function() {
-        view.fn.extend(base.fn);
+    it("defines #subscribe", function() {
+      expect(view.setup.subscribe).toBeDefined();
+    });
 
-        instance.view();
-        expect(instance.data('method')).toEqual('called');
-      });
+    describe("inheritance", function() {
+      var base, view, html, instance;
 
-      it("allows method overriding", function() {
-        view.fn.extend(base.fn);
-        view.fn.extend({
-          method : function() {
-            this.data('method', 'override');
+      before(function() {
+        base = fixture('views/simple.js');
+        html = fixture('views/simple.html');
+        view = Emerson.view('inherit', {
+          initialize : function() {
+            this.method();
           }
         });
-
-        instance.view();
-        expect(instance.data('method')).toEqual('override');
-      });
-
-      it("provides a mechanism for handling 'super'", function() {
-        view.fn.extend(base.fn);
-        view.fn.extend({
-          method : function() {
-            base.fn.method.call(this);
-          }
-        });
-
         instance = $(html).attr('data-view', 'inherit');
-        instance.view();
-        expect(instance.data('method')).toEqual('called');
       });
 
-      it("does not affect the source definition", function() {
-        view.fn.extend(base.fn);
-        view.fn.extend({
-          method : function() {
-            this.data('method', 'override');
-          }
+      describe("via view.extend", function() {
+        it("works", function() {
+          view.extend(base);
+
+          instance.view();
+          expect(instance.data('method')).toEqual('called');
         });
 
-        // load "simple" instead of "inherited"
-        instance = $(html).attr('data-view', 'simple');
-        instance.view();
-        expect(instance.data('method')).toEqual('called');
-      });
-    });
-  });
+        it("allows method overriding", function() {
+          view.extend(base);
+          view.extend({
+            method : function() {
+              this.data('method', 'override');
+            }
+          });
 
-  describe("event handlers", function() {
-    var view, html, link, instance, handler;
-
-    before(function() {
-      handler = jasmine.createSpy('handler');
-      html    = $('<article data-view="events"><a class="link">click me</a></article>');
-      link    = $('a.link', html);
-    });
-
-    context("subscribed via `event : handler`", function() {
-      var object;
-
-      before(function() {
-        view = Emerson.view('events', {
-          subscribe : {
-            click : handler
-          }
+          instance.view();
+          expect(instance.data('method')).toEqual('override');
         });
 
-        instance = html.view();
-      });
+        it("provides a mechanism for handling 'super'", function() {
+          view.extend(base);
+          view.extend({
+            method : function() {
+              base.fn.method.call(this);
+            }
+          });
 
-      it("works", function() {
-        link.trigger('click');
-        expect(handler).toHaveBeenCalled();
-      });
-
-      it("is called with `this` as the view instance", function() {
-        link.trigger('click');
-        object = handler.mostRecentCall.object;
-
-        expect(object).toBe('article');
-        expect(object[0]).toEqual(instance[0]);
-      });
-    });
-
-    context("subscribed via `'eventOne eventTwo' : handler`", function() {
-      before(function() {
-        view = Emerson.view('events', {
-          subscribe : {
-            'click mouseover' : handler
-          }
+          instance.view();
+          expect(instance.data('method')).toEqual('called');
         });
 
-        instance = html.view();
+        it("does not affect the source definition", function() {
+          view.extend(base);
+          view.extend({
+            method : function() {
+              this.data('method', 'override');
+            }
+          });
+
+          // load "simple" instead of "inherited"
+          instance = $(html).attr('data-view', 'simple');
+          instance.view();
+          expect(instance.data('method')).toEqual('called');
+        });
       });
 
-      it("works", function() {
-        link.trigger('click');
-        link.trigger('mouseover');
-        expect(handler.callCount).toEqual(2);
+      describe("via view.fn.extend", function() {
+        it("works", function() {
+          view.fn.extend(base.fn);
+
+          instance.view();
+          expect(instance.data('method')).toEqual('called');
+        });
+
+        it("allows method overriding", function() {
+          view.fn.extend(base.fn);
+          view.fn.extend({
+            method : function() {
+              this.data('method', 'override');
+            }
+          });
+
+          instance.view();
+          expect(instance.data('method')).toEqual('override');
+        });
+
+        it("provides a mechanism for handling 'super'", function() {
+          view.fn.extend(base.fn);
+          view.fn.extend({
+            method : function() {
+              base.fn.method.call(this);
+            }
+          });
+
+          instance = $(html).attr('data-view', 'inherit');
+          instance.view();
+          expect(instance.data('method')).toEqual('called');
+        });
+
+        it("does not affect the source definition", function() {
+          view.fn.extend(base.fn);
+          view.fn.extend({
+            method : function() {
+              this.data('method', 'override');
+            }
+          });
+
+          // load "simple" instead of "inherited"
+          instance = $(html).attr('data-view', 'simple');
+          instance.view();
+          expect(instance.data('method')).toEqual('called');
+        });
       });
     });
 
-    describe("subscribed via `{ 'selector' : { 'event' : handler } }`", function() {
+    describe("event handling", function() {
+      var view, html, link, instance, handler;
+
       before(function() {
-        view = Emerson.view('events', {
-          subscribe : {
-            'a.link' : {
+        handler = jasmine.createSpy('handler');
+        html    = $('<article data-view="events"><a class="link">click me</a></article>');
+        link    = $('a.link', html);
+      });
+
+      context("subscribed via `event : handler`", function() {
+        var object;
+
+        before(function() {
+          view = Emerson.view('events', {
+            subscribe : {
               click : handler
             }
-          }
+          });
+
+          instance = html.view();
         });
 
-        instance = html.view();
+        it("works", function() {
+          link.trigger('click');
+          expect(handler).toHaveBeenCalled();
+        });
+
+        it("is called with `this` as the view instance", function() {
+          link.trigger('click');
+          object = handler.mostRecentCall.object;
+
+          expect(object).toBe('article');
+          expect(object[0]).toEqual(instance[0]);
+        });
       });
 
-      it("works", function() {
-        link.trigger('click');
-        expect(handler).toHaveBeenCalled();
-      });
-    });
-
-    describe("subscribed via `{ document : { 'event' : handler } }`", function() {
-      before(function() {
-        view = Emerson.view('events', {
-          subscribe : {
-            document : {
-              click : handler
+      context("subscribed via `'eventOne eventTwo' : handler`", function() {
+        before(function() {
+          view = Emerson.view('events', {
+            subscribe : {
+              'click mouseover' : handler
             }
-          }
+          });
+
+          instance = html.view();
         });
 
-        instance = html.view();
+        it("works", function() {
+          link.trigger('click');
+          link.trigger('mouseover');
+          expect(handler.callCount).toEqual(2);
+        });
       });
 
-      it("works, allowing views to handle events triggered elsewhere", function() {
-        $('body').trigger('click');
-        expect(handler).toHaveBeenCalled();
+      context("subscribed via `{ 'selector' : { 'event' : handler } }`", function() {
+        before(function() {
+          view = Emerson.view('events', {
+            subscribe : {
+              'a.link' : {
+                click : handler
+              }
+            }
+          });
+
+          instance = html.view();
+        });
+
+        it("works", function() {
+          link.trigger('click');
+          expect(handler).toHaveBeenCalled();
+        });
+      });
+
+      context("subscribed via `{ document : { 'event' : handler } }`", function() {
+        before(function() {
+          view = Emerson.view('events', {
+            subscribe : {
+              document : {
+                click : handler
+              }
+            }
+          });
+
+          instance = html.view();
+        });
+
+        it("works, allowing views to handle events triggered elsewhere", function() {
+          $('body').trigger('click');
+          expect(handler).toHaveBeenCalled();
+        });
       });
     });
   });
