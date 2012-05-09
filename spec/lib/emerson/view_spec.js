@@ -17,15 +17,15 @@ describe("Emerson.view", function() {
       it("has the appropriate constructor", function() {
         expect(view.constructor.name).toEqual('View');
       });
-
-      it("defines #initialize", function() {
-        expect(view.setup.initialize).toBeDefined();
-      });
-
-      it("defines #subscribe", function() {
-        expect(view.setup.subscribe).toBeDefined();
-      });
     }
+
+    it("defines #initialize", function() {
+      expect(view.setup.initialize).toBeDefined();
+    });
+
+    it("defines #subscribe", function() {
+      expect(view.setup.subscribe).toBeDefined();
+    });
   });
 
   describe("$.view", function() {
@@ -325,6 +325,43 @@ describe("Emerson.view", function() {
         instance = $(html).attr('data-view', 'simple');
         instance.view();
         expect(instance.data('method')).toEqual('called');
+      });
+    });
+  });
+
+  describe("event handlers", function() {
+    var view, html, link, instance, handler;
+
+    before(function() {
+      handler = jasmine.createSpy('handler');
+      html    = $('<article data-view="events"><a class="link">click me</a></article>');
+      link    = $('a.link', html);
+    });
+
+    context("bound via `event : handler`", function() {
+      var object;
+
+      before(function() {
+        view = Emerson.view('events', {
+          subscribe : {
+            click : handler
+          }
+        });
+
+        instance = html.view();
+      });
+
+      it("works", function() {
+        link.click();
+        expect(handler).toHaveBeenCalled();
+      });
+
+      it("is called with `this` as the view instance", function() {
+        link.click();
+        object = handler.mostRecentCall.object;
+
+        expect(object).toBe('article');
+        expect(object[0]).toEqual(instance[0]);
       });
     });
   });
