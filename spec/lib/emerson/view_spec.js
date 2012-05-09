@@ -401,5 +401,24 @@ describe("Emerson.view", function() {
         expect(handler).toHaveBeenCalled();
       });
     });
+
+    describe("subscribed via `{ document : { 'event' : handler } }`", function() {
+      before(function() {
+        view = Emerson.view('events', {
+          subscribe : {
+            document : {
+              click : handler
+            }
+          }
+        });
+
+        instance = html.view();
+      });
+
+      it("works, allowing views to handle events triggered elsewhere", function() {
+        $('body').trigger('click');
+        expect(handler).toHaveBeenCalled();
+      });
+    });
   });
 });
