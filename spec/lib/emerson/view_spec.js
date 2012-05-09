@@ -352,16 +352,34 @@ describe("Emerson.view", function() {
       });
 
       it("works", function() {
-        link.click();
+        link.trigger('click');
         expect(handler).toHaveBeenCalled();
       });
 
       it("is called with `this` as the view instance", function() {
-        link.click();
+        link.trigger('click');
         object = handler.mostRecentCall.object;
 
         expect(object).toBe('article');
         expect(object[0]).toEqual(instance[0]);
+      });
+    });
+
+    describe("bound via `'eventOne eventTwo' : handler`", function() {
+      before(function() {
+        view = Emerson.view('events', {
+          subscribe : {
+            'click mouseover' : handler
+          }
+        });
+
+        instance = html.view();
+      });
+
+      it("works", function() {
+        link.trigger('click');
+        link.trigger('mouseover');
+        expect(handler.callCount).toEqual(2);
       });
     });
   });
