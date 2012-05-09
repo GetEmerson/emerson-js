@@ -190,6 +190,33 @@ describe("Emerson.view", function() {
         expect($('#html-2')).toHaveCss({ 'color' : 'blue' });
       });
     });
+
+    describe("given nested DOM matches", function() {
+      var view, trait, container;
+
+      before(function() {
+        view      = fixture('views/simple.js');
+        trait     = fixture('views/shared/blue-trait.js');
+        container = $('<div>');
+        container.html(fixture('views/with-trait.html'));
+      });
+
+      it("calls #initialize for the DOM matches", function() {
+        spyOn(view.setup,  'initialize');
+        spyOn(trait.setup, 'initialize');
+
+        container.view();
+        expect(view.setup.initialize).toHaveBeenCalled();
+        expect(trait.setup.initialize).toHaveBeenCalled();
+      });
+
+      it("modifies the DOM matches", function() {
+        container.view();
+        expect(container.find('article')).toHaveCss({
+          'color' : 'blue'
+        });
+      });
+    });
   });
 
   describe("view inheritance", function() {
