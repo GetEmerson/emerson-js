@@ -82,7 +82,7 @@ describe("Emerson.view", function() {
       expect(instance[0]._emerson).toBeGreaterThan(1);
     });
 
-    describe("given a view match", function() {
+    context("given a view match", function() {
       it("calls #initialize", function() {
         spyOn(view.setup, 'initialize');
 
@@ -100,7 +100,7 @@ describe("Emerson.view", function() {
       });
     });
 
-    describe("given a trait match", function() {
+    context("given a trait match", function() {
       before(function() {
         view = fixture('views/shared/blank-trait.js');
         html = fixture('views/shared/blank-trait.html');
@@ -123,13 +123,13 @@ describe("Emerson.view", function() {
       });
     });
 
-    describe("given multiple trait matches", function() {
+    context("given multiple trait matches", function() {
       var view_1, view_2, html, instance;
 
       before(function() {
         view_1 = fixture('views/shared/blue-trait.js');
         view_2 = fixture('views/shared/bold-trait.js');
-        html   = fixture('views/shared/dual-trait.html');
+        html   = fixture('views/shared/dual-traits.html');
       });
 
       it("calls #initialize for both traits", function() {
@@ -150,12 +150,12 @@ describe("Emerson.view", function() {
       });
     });
 
-    describe("given multiple DOM matches", function() {
+    context("given multiple DOM matches", function() {
       var view, html;
 
       before(function() {
         view = fixture('views/shared/blue-trait.js');
-        html = fixture('views/shared/dual-trait.html');
+        html = fixture('views/shared/dual-traits.html');
         var one = $(html).attr('id', 'html-1');
         var two = $(html).attr('id', 'html-2');
 
@@ -178,7 +178,7 @@ describe("Emerson.view", function() {
       });
     });
 
-    describe("given nested DOM matches", function() {
+    context("given nested DOM matches", function() {
       var view, trait, container;
 
       before(function() {
@@ -202,6 +202,49 @@ describe("Emerson.view", function() {
         expect(container.find('article')).toHaveCss({
           'color' : 'blue'
         });
+      });
+    });
+
+    context("when custom data-x attributes have been configured", function() {
+      var original, view, trait, html, other;
+
+      before(function() {
+        original = Emerson.config();
+
+        Emerson.config({
+          attrs : {
+            view   : 'presents',
+            traits : 'behavior'
+          }
+        });
+
+        Emerson.view.init();
+
+        view  = fixture('views/simple.js');
+        trait = fixture('views/shared/blank-trait.js');
+        html  = fixture('views/selectors.html');
+        other = fixture('views/simple.html');
+
+        spyOn(view.setup,  'initialize');
+        spyOn(trait.setup, 'initialize');
+      });
+
+      after(function() {
+        // reset
+        Emerson.config(original);
+        Emerson.view.init();
+      });
+
+      it("handles the custom selectors", function() {
+        $(html).view();
+        expect(view.setup.initialize).toHaveBeenCalled();
+        expect(trait.setup.initialize).toHaveBeenCalled();
+      });
+
+      it("does not handle the default selectors", function() {
+        $(other).view();
+        expect(view.setup.initialize).not.toHaveBeenCalled();
+        expect(trait.setup.initialize).not.toHaveBeenCalled();
       });
     });
   });

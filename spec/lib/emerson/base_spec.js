@@ -4,8 +4,27 @@ describe("Emerson", function() {
   });
 
   describe(".config", function() {
-    it("is pending", function() {
-      // pending();
+    var original;
+
+    before(function() {
+      original = Emerson.config();
+    });
+
+    after(function() {
+      // reset
+      Emerson.config(original);
+    });
+
+    it("allows the Emerson to be configured", function() {
+      Emerson.config({
+        attrs : {
+          view   : 'presents',
+          traits : 'behavior'
+        }
+      });
+
+      expect(Emerson.config('attrs.view')).toEqual('presents');
+      expect(Emerson.config('attrs.traits')).toEqual('behavior');
     });
   });
 
