@@ -28,8 +28,17 @@ else {
       return jasmine.getEnv().describe(description, definitions);
     },
 
-    fixture : function(path) {
-      var result = readFixtures(path);
+    fixture : function(path, load) {
+      function readonly() {
+        return readFixtures(path);
+      }
+
+      function rendered() {
+        loadFixtures(path);
+        return $('#jasmine-fixtures').children();
+      }
+
+      var result = load ? rendered() : readonly();
       var parts  = /^([a-z]+)\/(.+)\.([a-z]+)$/.exec(path);
       var prefix = parts[1];
       var key    = parts[2];

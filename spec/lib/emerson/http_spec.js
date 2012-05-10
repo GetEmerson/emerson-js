@@ -79,7 +79,7 @@ describe("Emerson.http", function() {
         before(function() {
           args = [
             {
-              view : '<article data-sink="simple">content</article>'
+              view : '<article data-sink="key">content</article>'
             }, 200, {}
           ];
         });
@@ -102,7 +102,7 @@ describe("Emerson.http", function() {
           args = [
             {
               responseText : JSON.stringify({
-                view : '<article data-sink="simple">content</article>'
+                view : '<article data-sink="key">content</article>'
               })
             }, 200, 'error'
           ];

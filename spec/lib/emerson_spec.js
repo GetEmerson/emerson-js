@@ -7,9 +7,15 @@ describe("Emerson", function() {
     expect(Emerson.VERSION).toEqual('0.0.0');
   });
 
+  describe(".config", function() {
+    it("is pending", function() {
+      // pending();
+    });
+  });
+
   describe(".init", function() {
     it("calls module.init for registered modules", function() {
-      _.each(['util', 'view'], function(mod) {
+      _.each(['sink', 'util', 'view'], function(mod) {
         spyOn(Emerson[mod], 'init');
       });
 
