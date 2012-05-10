@@ -15,7 +15,7 @@ describe("Emerson", function() {
 
   describe(".init", function() {
     it("calls module.init for registered modules", function() {
-      _.each(['sink', 'util', 'view'], function(mod) {
+      _.each(['http', 'sink', 'util', 'view'], function(mod) {
         spyOn(Emerson[mod], 'init');
       });
 
