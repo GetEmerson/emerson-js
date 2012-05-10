@@ -34,7 +34,7 @@ describe("Emerson.http", function() {
 
   describe("event handling", function() {
     before(function() {
-      spyOn(Emerson, 'sink');
+      spyOn($.fn, 'sink');
     });
 
     context("when Emerson.sink is not loaded", function() {
@@ -59,12 +59,12 @@ describe("Emerson.http", function() {
     context("when `.init` has not run", function() {
       it("does not 'sink' on `ajax:success`", function() {
         $(document).trigger('ajax:success');
-        expect(Emerson.sink).not.toHaveBeenCalled();
+        expect($.fn.sink).not.toHaveBeenCalled();
       });
 
       it("does not 'sink' on `ajax:error`", function() {
         $(document).trigger('ajax:error');
-        expect(Emerson.sink).not.toHaveBeenCalled();
+        expect($.fn.sink).not.toHaveBeenCalled();
       });
     });
 
@@ -84,14 +84,15 @@ describe("Emerson.http", function() {
           ];
         });
 
-        it("calls Emerson.sink", function() {
+        it("calls $.fn.sink", function() {
           $(document).trigger('ajax:success', args);
-          expect(Emerson.sink).toHaveBeenCalled();
+          expect($.fn.sink).toHaveBeenCalled();
         });
 
-        it("calls Emerson.sink with the response content", function() {
+        it("calls $.fn.sink with the response content", function() {
           $(document).trigger('ajax:success', args);
-          expect(Emerson.sink.mostRecentCall.args[0]).toBe('article[data-sink]');
+          expect($.fn.sink).toHaveBeenCalled();
+          expect($.fn.sink.mostRecentCall.object).toBe('article[data-sink]');
         });
       });
 
@@ -108,14 +109,15 @@ describe("Emerson.http", function() {
           ];
         });
 
-        it("calls Emerson.sink", function() {
+        it("calls $.fn.sink", function() {
           $(document).trigger('ajax:error', args);
-          expect(Emerson.sink).toHaveBeenCalled();
+          expect($.fn.sink).toHaveBeenCalled();
         });
 
-        it("calls Emerson.sink with the response content", function() {
+        it("calls $.fn.sink with the response content", function() {
           $(document).trigger('ajax:error', args);
-          expect(Emerson.sink.mostRecentCall.args[0]).toBe('article[data-sink]');
+          expect($.fn.sink).toHaveBeenCalled();
+          expect($.fn.sink.mostRecentCall.object).toBe('article[data-sink]');
         });
       });
     });

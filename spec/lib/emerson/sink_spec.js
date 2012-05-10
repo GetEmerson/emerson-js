@@ -1,18 +1,4 @@
 describe("Emerson.sink", function() {
-  describe("module", function() {
-    context("when called with a baselib-wrapped element", function() {
-      before(function() {
-        spyOn($.fn, 'sink');
-      });
-
-      it("calls $.fn.sink for the element", function() {
-        Emerson.sink($('<article>'));
-        expect($.fn.sink).toHaveBeenCalled();
-        expect($.fn.sink.mostRecentCall.object).toBe('article');
-      });
-    });
-  });
-
   describe("$.fn.sink", function() {
     var sink, html, wrapper;
 
@@ -20,6 +6,10 @@ describe("Emerson.sink", function() {
       sink    = fixture('views/simple.html', true);
       html    = '<article data-sink="key">updated content</article>';
       wrapper = sink.parent();
+    });
+
+    it("returns the object", function() {
+      expect($(html).sink().text()).toEqual($(html).text());
     });
 
     context("when an existing 'sink' matches the outer element", function() {
@@ -102,7 +92,7 @@ describe("Emerson.sink", function() {
 
     it("clears any callbacks", function() {
       Emerson.sink.init();
-      Emerson.sink($('<article>'));
+      $('<article>').sink();
       expect(callback).not.toHaveBeenCalled();
     });
   });
@@ -123,13 +113,13 @@ describe("Emerson.sink", function() {
       });
 
       it("executes the callback before a sink run", function() {
-        Emerson.sink(view);
+        view.sink();
         expect(callback).toHaveBeenCalled();
         expect(callback.mostRecentCall.args[0]).toBe('article');
       });
 
       it("executes pre-existing callbacks before a sink run", function() {
-        Emerson.sink(view);
+        view.sink();
         expect(existing).toHaveBeenCalled();
         expect(callback.mostRecentCall.args[0]).toBe('article');
       });
@@ -168,13 +158,13 @@ describe("Emerson.sink", function() {
       });
 
       it("executes the callback after a sink run", function() {
-        Emerson.sink(view);
+        view.sink();
         expect(callback).toHaveBeenCalled();
         expect(callback.mostRecentCall.args[0]).toBe('article');
       });
 
       it("executes pre-existing callbacks after a sink run", function() {
-        Emerson.sink(view);
+        view.sink();
         expect(existing).toHaveBeenCalled();
         expect(callback.mostRecentCall.args[0]).toBe('article');
       });
