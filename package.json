@@ -3,7 +3,7 @@
   "description" : "transendent views",
   "version"     : "0.0.2",
   "author"      : "Corey Innis <corey@coolerator.net> (https://coolerator.net)",
-  "homepage"    : "https://github.com/coreyti/emerson-js",
+  "homepage"    : "http://coreyti.github.com/emerson-js",
   "repository"  : {
     "type"      : "git",
     "url"       : "git://github.com/coreyti/emerson-js.git"
