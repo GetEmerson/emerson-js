@@ -1,7 +1,7 @@
 {
   "name"        : "emerson",
   "description" : "transendent views",
-  "version"     : "0.0.1",
+  "version"     : "0.0.2",
   "author"      : "Corey Innis <corey@coolerator.net> (https://coolerator.net)",
   "homepage"    : "https://github.com/coreyti/emerson-js",
   "repository"  : {
