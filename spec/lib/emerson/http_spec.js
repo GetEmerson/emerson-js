@@ -1,6 +1,6 @@
 describe("Emerson.http", function() {
   before(function() {
-    $(document).off('ajax:error ajax:success', Emerson.sink);
+    $(document).off('ajax:error ajax:success'); // hmm... risky!
   });
 
   describe(".ns", function() {
@@ -33,47 +33,38 @@ describe("Emerson.http", function() {
   });
 
   describe("event handling", function() {
-    var original, callback;
-
     before(function() {
-      original = Emerson.sink;
-      callback = jasmine.createSpy('callback');
-      Emerson.sink.after(callback);
-    });
-
-    after(function() {
-      Emerson.sink = original;
+      spyOn(Emerson, 'sink');
     });
 
     context("when Emerson.sink is not loaded", function() {
       before(function() {
-        Emerson.sink = undefined;
+        undefine(Emerson, 'sink');
+        Emerson.http.init();
       });
 
       it("does not 'sink' on `ajax:success`", function() {
         expect(function() {
           $(document).trigger('ajax:success');
         }).not.toThrow();
-        expect(callback).not.toHaveBeenCalled();
       });
 
       it("does not 'sink' on `ajax:error`", function() {
         expect(function() {
           $(document).trigger('ajax:error');
         }).not.toThrow();
-        expect(callback).not.toHaveBeenCalled();
       });
     });
 
     context("when `.init` has not run", function() {
       it("does not 'sink' on `ajax:success`", function() {
         $(document).trigger('ajax:success');
-        expect(callback).not.toHaveBeenCalled();
+        expect(Emerson.sink).not.toHaveBeenCalled();
       });
 
       it("does not 'sink' on `ajax:error`", function() {
         $(document).trigger('ajax:error');
-        expect(callback).not.toHaveBeenCalled();
+        expect(Emerson.sink).not.toHaveBeenCalled();
       });
     });
 
@@ -82,14 +73,50 @@ describe("Emerson.http", function() {
         Emerson.http.init();
       });
 
-      it("calls 'sink' on `ajax:success`", function() {
-        $(document).trigger('ajax:success');
-        expect(callback).toHaveBeenCalled();
+      describe("on ajax:success", function() {
+        var args;
+
+        before(function() {
+          args = [
+            {
+              view : '<article data-sink="simple">content</article>'
+            }, 200, {}
+          ];
+        });
+
+        it("calls Emerson.sink", function() {
+          $(document).trigger('ajax:success', args);
+          expect(Emerson.sink).toHaveBeenCalled();
+        });
+
+        it("calls Emerson.sink with the response content", function() {
+          $(document).trigger('ajax:success', args);
+          expect(Emerson.sink.mostRecentCall.args[0]).toBe('article[data-sink]');
+        });
       });
 
-      it("calls 'sink' on `ajax:error`", function() {
-        $(document).trigger('ajax:error');
-        expect(callback).toHaveBeenCalled();
+      describe("on ajax:error", function() {
+        var args;
+
+        before(function() {
+          args = [
+            {
+              responseText : JSON.stringify({
+                view : '<article data-sink="simple">content</article>'
+              })
+            }, 200, 'error'
+          ];
+        });
+
+        it("calls Emerson.sink", function() {
+          $(document).trigger('ajax:error', args);
+          expect(Emerson.sink).toHaveBeenCalled();
+        });
+
+        it("calls Emerson.sink with the response content", function() {
+          $(document).trigger('ajax:error', args);
+          expect(Emerson.sink.mostRecentCall.args[0]).toBe('article[data-sink]');
+        });
       });
     });
   });

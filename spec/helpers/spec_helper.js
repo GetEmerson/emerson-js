@@ -49,6 +49,15 @@ else {
 
     after : function(callback) {
       return jasmine.getEnv().afterEach(callback);
+    },
+
+    undefine : function(object, property) {
+      var original = object[property];
+      object[property] = undefined;
+
+      jasmine.getEnv().currentSpec.after(function() {
+        object[property] = original;
+      });
     }
   });
 
