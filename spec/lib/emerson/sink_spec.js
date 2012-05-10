@@ -7,32 +7,14 @@ describe("Emerson.sink", function() {
 
   describe("module", function() {
     context("when called with a baselib-wrapped element", function() {
-      var calls;
-
       before(function() {
-        Emerson.sink.init();
-        calls = [];
-
-        spyOn($.fn, 'sink').andCallFake(function() {
-          calls.push('actual');
-        });
-        Emerson.sink.before(function() {
-          calls.push('before');
-        });
-        Emerson.sink.after(function() {
-          calls.push('after');
-        });
+        spyOn($.fn, 'sink');
       });
 
       it("calls $.fn.sink for the element", function() {
         Emerson.sink($('<article>'));
         expect($.fn.sink).toHaveBeenCalled();
         expect($.fn.sink.mostRecentCall.object).toBe('article');
-      });
-
-      it("calls before, $.fn.sink, and after in that order", function() {
-        Emerson.sink($('<article>'));
-        expect(calls).toEqual(['before', 'actual', 'after']);
       });
     });
   });
@@ -46,11 +28,37 @@ describe("Emerson.sink", function() {
       wrapper = sink.parent();
     });
 
-    it("replaces an existing 'sink'", function() {
-      expect(wrapper.find('article')).toHaveText(/\s*original content\s*/);
+    describe("when the container is a match for an existing 'sink'", function() {
+      var calls;
 
-      $(html).sink();
-      expect(wrapper.find('article')).toHaveText(/\s*updated content\s*/);
+      before(function() {
+        Emerson.sink.init();
+        calls = [];
+
+        var fake = spyOn($.fn, 'replaceAll').andCallFake(function() {
+          calls.push('actual');
+          fake.originalValue.apply(this, arguments);
+        });
+
+        Emerson.sink.before(function() {
+          calls.push('before');
+        });
+        Emerson.sink.after(function() {
+          calls.push('after');
+        });
+      });
+
+      it("replaces the sink", function() {
+        expect(wrapper.find('article')).toHaveText(/\s*original content\s*/);
+
+        $(html).sink();
+        expect(wrapper.find('article')).toHaveText(/\s*updated content\s*/);
+      });
+
+      it("calls before and after callbacks, in the appropriate order", function() {
+        $('<article>').sink();
+        expect(calls).toEqual(['before', 'actual', 'after']);
+      });
     });
   });
 
