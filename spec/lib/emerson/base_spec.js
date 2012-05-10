@@ -10,14 +10,28 @@ describe("Emerson", function() {
   });
 
   describe(".init", function() {
-    it("calls module.init for registered modules", function() {
+    before(function() {
       _.each(['http', 'sink', 'util', 'view'], function(mod) {
         spyOn(Emerson[mod], 'init');
       });
+    });
 
+    it("calls module.init for registered modules", function() {
       Emerson.init();
       expect(Emerson.util.init).toHaveBeenCalled();
       expect(Emerson.view.init).toHaveBeenCalled();
+    });
+
+    describe("given specific modules", function() {
+      it("calls init for only those modules", function() {
+        Emerson.init('util', 'view');
+
+        expect(Emerson.util.init).toHaveBeenCalled();
+        expect(Emerson.view.init).toHaveBeenCalled();
+
+        expect(Emerson.http.init).not.toHaveBeenCalled();
+        expect(Emerson.sink.init).not.toHaveBeenCalled();
+      });
     });
   });
 });
