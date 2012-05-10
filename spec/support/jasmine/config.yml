@@ -13,6 +13,7 @@
 src_files:
   - lib/vendor/**/*.js
   - lib/emerson.js
+  - lib/emerson/base.js
   - lib/emerson/util.js
   - lib/emerson/**/*.js
   - lib/**/*.js
