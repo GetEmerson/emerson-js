@@ -5,3 +5,4 @@ bootstrap.gems
 node_modules
 
 .tm_properties
+scratch/
