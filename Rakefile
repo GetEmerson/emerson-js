@@ -24,6 +24,20 @@ task :doc do
   system 'docco -t ./spec/support/docco/template.jst ./lib/emerson.js ./lib/emerson/*.js'
 end
 
+desc "update the documentation on github pages"
+task :'doc:commit' => :doc do
+  `git stash`
+  `mv docs docs.for_commit`
+  `git checkout gh-pages`
+  `rm -rdf docs`
+  `mv docs.for_commit docs`
+  `git add -A`
+  `git commit -m "update documentation"`
+  `git push origin gh-pages`
+  `git checkout master`
+  `git stash pop`
+end
+
 desc "serve the docco documentation"
 task :'doc:serve' => :doc do
   check 'serve-this', 'serve-this', 'https://github.com/matthewrudy/serve-this'
