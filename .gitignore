@@ -6,3 +6,4 @@ node_modules
 
 .tm_properties
 scratch/
+.sublime*
