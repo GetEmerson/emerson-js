@@ -19,15 +19,12 @@ describe("Emerson.sink", function() {
         Emerson.sink.init();
         calls = [];
 
-        var fake = spyOn($.fn, 'replaceAll').andCallFake(function() {
+        var spy = spyOn($.fn, 'replaceAll').andCallFake(function() {
           calls.push('actual');
-          fake.originalValue.apply(this, arguments);
+          spy.originalValue.apply(this, arguments);
         });
 
-        Emerson.sink.before(function() {
-          calls.push('before');
-        });
-        Emerson.sink.after(function() {
+        wrapper.bind('sink:after', function() {
           calls.push('after');
         });
       });
@@ -39,21 +36,18 @@ describe("Emerson.sink", function() {
         expect(wrapper.find('article')).toHaveText(/\s*updated content\s*/);
       });
 
-      it("calls before and after callbacks, in the appropriate order", function() {
+      it("fires the after event, in the appropriate order", function() {
         $(html).sink();
-        expect(calls).toEqual(['before', 'actual', 'after']);
+        expect(calls).toEqual(['actual', 'after']);
       });
     });
 
     context("when no existing 'sink' matches the outer element", function() {
-      var original, html;
+      var original, html, handler;
 
       before(function() {
-        Emerson.sink.before(function() {});
-        Emerson.sink.after(function() {});
-
-        spyOn(Emerson.sink, 'before');
-        spyOn(Emerson.sink, 'after');
+        handler = jasmine.createSpy('handler');
+        wrapper.one('sink:after', handler);
 
         original = wrapper.find('article').text();
         html     = '<div id="outer-container"><article data-sink="key">updated content</article></div>';
@@ -66,10 +60,9 @@ describe("Emerson.sink", function() {
         expect(wrapper.find('article')).toHaveText(original);
       });
 
-      it("does not call the before/after callbacks", function() {
+      it("does not fire the after events", function() {
         $(html).sink();
-        expect(Emerson.sink.before).not.toHaveBeenCalled();
-        expect(Emerson.sink.after).not.toHaveBeenCalled();
+        expect(handler).not.toHaveBeenCalled();
       });
     });
   });
@@ -81,109 +74,8 @@ describe("Emerson.sink", function() {
   });
 
   describe(".init", function() {
-    var callback;
-
-    before(function() {
-      callback = jasmine.createSpy('callback');
-
-      Emerson.sink.before(callback);
-      Emerson.sink.after(callback);
-    });
-
-    it("clears any callbacks", function() {
-      Emerson.sink.init();
-      $('<article>').sink();
-      expect(callback).not.toHaveBeenCalled();
-    });
-  });
-
-  describe(".before", function() {
-    var view, existing, callback;
-
-    before(function() {
-      view     = $('<article data-sink="key">');
-      existing = jasmine.createSpy('existing');
-      callback = jasmine.createSpy('callback');
-      Emerson.sink.before(existing);
-    });
-
-    context("called with a callback", function() {
-      before(function() {
-        Emerson.sink.before(callback);
-      });
-
-      it("executes the callback before a sink run", function() {
-        view.sink();
-        expect(callback).toHaveBeenCalled();
-        expect(callback.mostRecentCall.args[0]).toBe('article');
-      });
-
-      it("executes pre-existing callbacks before a sink run", function() {
-        view.sink();
-        expect(existing).toHaveBeenCalled();
-        expect(callback.mostRecentCall.args[0]).toBe('article');
-      });
-
-      it("does not execute the callbacks without calling .sink", function() {
-        expect(existing).not.toHaveBeenCalled();
-        expect(callback).not.toHaveBeenCalled();
-      });
-    });
-
-    context("called without a callback", function() {
-      before(function() {
-        Emerson.sink.before();
-      });
-
-      it("does not execute the callbacks without calling .sink", function() {
-        expect(existing).not.toHaveBeenCalled();
-        expect(callback).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe(".after", function() {
-    var view, existing, callback;
-
-    before(function() {
-      view     = $('<article data-sink="key">');
-      existing = jasmine.createSpy('existing');
-      callback = jasmine.createSpy('callback');
-      Emerson.sink.before(existing);
-    });
-
-    context("called with a callback", function() {
-      before(function() {
-        Emerson.sink.after(callback);
-      });
-
-      it("executes the callback after a sink run", function() {
-        view.sink();
-        expect(callback).toHaveBeenCalled();
-        expect(callback.mostRecentCall.args[0]).toBe('article');
-      });
-
-      it("executes pre-existing callbacks after a sink run", function() {
-        view.sink();
-        expect(existing).toHaveBeenCalled();
-        expect(callback.mostRecentCall.args[0]).toBe('article');
-      });
-
-      it("does not execute the callbacks without calling .sink", function() {
-        expect(existing).not.toHaveBeenCalled();
-        expect(callback).not.toHaveBeenCalled();
-      });
-    });
-
-    context("called without a callback", function() {
-      before(function() {
-        Emerson.sink.after();
-      });
-
-      it("does not execute the callbacks without calling .sink", function() {
-        expect(existing).not.toHaveBeenCalled();
-        expect(callback).not.toHaveBeenCalled();
-      });
+    it("doesn't do much at the moment", function() {
+      //
     });
   });
 });
