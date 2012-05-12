@@ -3,42 +3,44 @@
 A view...
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">ns</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                                          <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2 id="emersonextension">Emerson Extension</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h3 id="emersonviewmodule">Emerson.view module</h3>
 
-<p>Entry point for defining a new View.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">define</span> <span class="o">=</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">setup</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="p">(</span><span class="nx">library</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">construct</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">setup</span> <span class="o">||</span> <span class="p">{}));</span>
-  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3 id="moduleapi">Module API</h3>
+<p>Entry point for defining a new View.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">setup</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nx">views</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">construct</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">setup</span> <span class="o">||</span> <span class="p">{}));</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <h3 id="emersontraitmodule">Emerson.trait module</h3>
+
+<p>Entry point for defining a new "trait".</p>
+
+<p>A trait can be thought of as a set of related behaviors and is essentially
+a special form of view.</p>
+
+<p>Traits have the additional capability of responding to an optional "mode"
+at intialization.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">trait</span> <span class="o">=</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">trait</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">setup</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nx">traits</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">construct</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">setup</span> <span class="o">||</span> <span class="p">{}));</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h3 id="moduleapi">Module API</h3>
 
 <ul>
 <li><code>ns</code> is a reference to the namespace.</li>
 <li><code>init</code> is a hook for initializing the module.</li>
-</ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">define</span><span class="p">,</span> <span class="p">{</span>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">view</span><span class="p">,</span> <span class="p">{</span>
     <span class="nx">ns</span>   <span class="o">:</span> <span class="nx">ns</span><span class="p">,</span>
     <span class="nx">init</span> <span class="o">:</span> <span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
       <span class="nx">configure</span><span class="p">();</span>
       <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">).</span><span class="nx">view</span><span class="p">();</span>
     <span class="p">}</span>
-  <span class="p">});</span></pre></div>             </td>           </tr>                                          <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h2 id="baselibaryextension">"Base" Libary Extension</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Make a local copy of Emerson.base. e.g., one of jQuery, Zepto or Ender.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">$</span> <span class="o">=</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">;</span></pre></div>             </td>           </tr>                                          <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h3 id="dview">$.view</h3>
+  <span class="p">});</span></pre></div>             </td>           </tr>                                          <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <h2 id="baselibaryextension">"Base" Libary Extension</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Make a local copy of Emerson.base. e.g., one of jQuery, Zepto or Ender.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">$</span> <span class="o">=</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">;</span></pre></div>             </td>           </tr>                                          <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h3 id="dview">$.view</h3>
 
 <pre><code>$.view(key);
 </code></pre>
 
-<p>Accessor for defined Views.</p>
+<p>Accessor for defined Views.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">$</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">views</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h3 id="dtrait">$.trait</h3>
 
-<p>Note that, while it is possible to manually execute View methods on an
-object like so:</p>
-
-<pre><code>$.view(key).fn.method.apply(object, arguments);
+<pre><code>$.trait(key);
 </code></pre>
 
-<p>such usage is not recommended as it:</p>
-
-<ol>
-<li>circumvents the intentional transience provided by the framework.</li>
-<li>is likely to cause issues in that the called method will be working
- with a non-initialized/-decorated object which may not have the
- expected API.</li>
-</ol>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">$</span><span class="p">.</span><span class="nx">view</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">library</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
-  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h3 id="dfnview">$.fn.view</h3>
+<p>Accessor for defined Traits. See <code>$.view</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">$</span><span class="p">.</span><span class="nx">trait</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">traits</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h3 id="dfnview">$.fn.view</h3>
 
 <pre><code>$(target).view()
 </code></pre>
@@ -57,27 +59,25 @@ it works on the surrounding DOM match, as well as nested matches.</p>           
 
       <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">as_view</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">html</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">element</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">html</span><span class="p">);</span>
-        <span class="nx">attach</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="p">[</span><span class="nx">element</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">attrs</span><span class="p">.</span><span class="nx">view</span><span class="p">)]);</span>
+        <span class="nx">attach</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">views</span><span class="p">,</span> <span class="p">[</span><span class="nx">element</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">attrs</span><span class="p">.</span><span class="nx">view</span><span class="p">)]);</span>
       <span class="p">});</span>
 
       <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">as_trait</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">html</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">element</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">html</span><span class="p">);</span>
-        <span class="nx">attach</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">attrs</span><span class="p">.</span><span class="nx">traits</span><span class="p">).</span><span class="nx">split</span><span class="p">(</span><span class="sr">/\s+/</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="nx">key</span><span class="p">].</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
-        <span class="p">}));</span>
+        <span class="nx">attach</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">traits</span><span class="p">,</span> <span class="nx">element</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">attrs</span><span class="p">.</span><span class="nx">traits</span><span class="p">).</span><span class="nx">split</span><span class="p">(</span><span class="sr">/\s+/</span><span class="p">),</span> <span class="kc">true</span><span class="p">);</span>
       <span class="p">});</span>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h2 id="internalobjects">Internal Objects</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h3 id="viewconstructor">View constructor.</h3>
+  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h2 id="internalobjects">Internal Objects</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <h3 id="viewconstructor">View constructor.</h3>
 
 <p>View instances are "subclasses" of the base lib object, decorated with our
-View.prototype and the provided definition.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">View</span><span class="p">()</span> <span class="p">{}</span></pre></div>             </td>           </tr>                                          <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>View instance setup definition.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">View</span><span class="p">,</span> <span class="p">{</span>
+View.prototype and the provided definition.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">View</span><span class="p">()</span> <span class="p">{}</span></pre></div>             </td>           </tr>                                          <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>View instance setup definition.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">View</span><span class="p">,</span> <span class="p">{</span>
     <span class="nx">setup</span> <span class="o">:</span> <span class="p">{</span>
       <span class="nx">initialize</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{},</span>
       <span class="nx">subscribe</span>  <span class="o">:</span> <span class="p">{}</span>
     <span class="p">}</span>
-  <span class="p">});</span></pre></div>             </td>           </tr>                                          <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>View instance prototype definition.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">View</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="p">{});</span></pre></div>             </td>           </tr>                                          <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <h2 id="internalimplementation">Internal Implementation</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                                                                                                                                                                                    <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <h3 id="construct">construct</h3>
+  <span class="p">});</span></pre></div>             </td>           </tr>                                          <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>View instance prototype definition.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">View</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="p">{});</span></pre></div>             </td>           </tr>                                          <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <h2 id="internalimplementation">Internal Implementation</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                                                                                                                                                                                                          <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <h3 id="construct">construct</h3>
 
 <p>Construct a definition made up of:</p>
 
@@ -93,10 +93,10 @@ View.prototype and the provided definition.</p>             </td>             <t
     <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">sub</span><span class="p">.</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">View</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">sub</span><span class="p">;</span>
-  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <h3 id="attach">attach</h3>
+  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <h3 id="attach">attach</h3>
 
-<p>Given a (complex) list of keys, search the library for applicable View and
-Trait definitions to apply to the object.</p>
+<p>Given a (complex) list of keys, search the libraries for applicable View
+and Trait definitions to apply to the object.</p>
 
 <p>Keeps track of which definitions have been applied, and does not re-apply.</p>
 
@@ -104,19 +104,28 @@ Trait definitions to apply to the object.</p>
 a single element.  e.g.,</p>
 
 <pre><code>_.each($(selector), function(element) {
-  attach.apply($(element), [key, [subkey]]);
+  attach.apply($(element), views, [key, [subkey]]);
 });
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">attach</span><span class="p">()</span> <span class="p">{</span>
+</code></pre>
+
+<p>The <code>mode_p</code> predicate argument indicates whether the view type may accept
+a "mode", which should be true for traits (not for views).</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">attach</span><span class="p">(</span><span class="nx">library</span><span class="p">,</span> <span class="nx">keys</span><span class="p">,</span> <span class="nx">mode_p</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span> <span class="nx">def</span><span class="p">;</span>
     <span class="kd">var</span> <span class="nx">id</span>   <span class="o">=</span> <span class="nx">eid</span><span class="p">(</span><span class="k">this</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
 
-    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">flatten</span><span class="p">(</span><span class="nx">arguments</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">set</span> <span class="o">=</span> <span class="p">(</span><span class="nx">attachments</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">||</span> <span class="p">(</span><span class="nx">attachments</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]));</span>
-      <span class="kd">var</span> <span class="nx">built</span><span class="p">,</span> <span class="nx">init</span><span class="p">,</span> <span class="nx">events</span><span class="p">;</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">flatten</span><span class="p">(</span><span class="nx">keys</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">mode</span><span class="p">,</span> <span class="nx">match</span><span class="p">,</span> <span class="nx">built</span><span class="p">,</span> <span class="nx">init</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">set</span><span class="p">;</span>
+
+      <span class="k">if</span><span class="p">(</span><span class="nx">mode_p</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">match</span> <span class="o">=</span> <span class="sr">/^([^(]+)\((.+)\)/</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">key</span><span class="p">)))</span> <span class="p">{</span>
+        <span class="nx">key</span>  <span class="o">=</span> <span class="nx">match</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+        <span class="nx">mode</span> <span class="o">=</span> <span class="nx">match</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+      <span class="p">}</span>
+
+      <span class="nx">set</span> <span class="o">=</span> <span class="p">(</span><span class="nx">attachments</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">||</span> <span class="p">(</span><span class="nx">attachments</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]));</span>
 
       <span class="k">if</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">include</span><span class="p">(</span><span class="nx">set</span><span class="p">,</span> <span class="nx">id</span><span class="p">))</span> <span class="p">{</span>
         <span class="k">return</span><span class="p">;</span> <span class="c1">// do not re-apply.</span>
-      <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Build an instance, attach event handlers, initialize and record.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span><span class="p">(</span><span class="nx">def</span> <span class="o">=</span> <span class="nx">library</span><span class="p">[</span><span class="nx">key</span><span class="p">])</span> <span class="p">{</span>
+      <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Build an instance, attach event handlers, initialize and record.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span><span class="p">(</span><span class="nx">def</span> <span class="o">=</span> <span class="nx">library</span><span class="p">[</span><span class="nx">key</span><span class="p">])</span> <span class="p">{</span>
         <span class="nx">built</span>  <span class="o">=</span> <span class="nx">def</span><span class="p">(</span><span class="nx">self</span><span class="p">,</span> <span class="nx">self</span><span class="p">.</span><span class="nx">context</span><span class="p">);</span>
         <span class="nx">init</span>   <span class="o">=</span> <span class="nx">def</span><span class="p">.</span><span class="nx">setup</span><span class="p">.</span><span class="nx">initialize</span><span class="p">;</span>
         <span class="nx">events</span> <span class="o">=</span> <span class="nx">def</span><span class="p">.</span><span class="nx">setup</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">;</span>
@@ -125,13 +134,13 @@ a single element.  e.g.,</p>
           <span class="nx">bind</span><span class="p">(</span><span class="nx">built</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
         <span class="p">});</span>
 
-        <span class="nx">init</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">built</span><span class="p">);</span>
+        <span class="nx">init</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">built</span><span class="p">,</span> <span class="nx">mode</span><span class="p">);</span>
         <span class="nx">set</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
       <span class="p">}</span>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <h3 id="bind">bind</h3>
+  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <h3 id="bind">bind</h3>
 
 <p>Attach event handler(s).</p>
 
@@ -145,10 +154,18 @@ a single element.  e.g.,</p>
     },
     document      : {           // bind document, for events
       'click'     : handler     // fired outside of the view
+      'selector'  : {           // TODO
+        'click'   : handler
+      } 
     }
   }
 });
 </code></pre>
+
+<p>Emerson event handling differs from that of, say, stock jQuery in that
+<code>this</code> within the context of the handler will be a view instance.  The
+event argument is unadultered, allowing access to the full set of targets
+as defined by the baselib (e.g., jQuery).</p>
 
 <p>Note that, in the document-binding case, an event like <code>click</code> would be a
 bad idea.  A more useful (and less costly) use case would be a form of
@@ -174,7 +191,7 @@ to update, say, a count of instances of "A".</p>             </td>             <
         <span class="p">});</span>
       <span class="p">}</span>
     <span class="p">}</span>
-  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <h3 id="dsub">$sub</h3>
+  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <h3 id="dsub">$sub</h3>
 
 <p>Basically a copy of jQuery.sub, but more generic and with changes to:</p>
 
