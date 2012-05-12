@@ -1,7 +1,7 @@
 <!DOCTYPE html>  <html> <head>   <title>base.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="emerson.html">                 emerson.js               </a>                                           <a class="source" href="base.html">                 base.js               </a>                                           <a class="source" href="http.html">                 http.js               </a>                                           <a class="source" href="sink.html">                 sink.js               </a>                                           <a class="source" href="util.html">                 util.js               </a>                                           <a class="source" href="view.html">                 view.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               <a href="http://coreyti.github.com/emerson-js/">emerson</a> :               base.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                                          <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <pre><code>Emerson Base
 
 Defines the Emerson namespace (global).
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">(){</span></pre></div>             </td>           </tr>                                          <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2 id="initialsetup">Initial Setup</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Save a reference to the global object...
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                                          <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h2 id="initialsetup">Initial Setup</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Save a reference to the global object...
 <code>window</code> in the browser, <code>global</code> on the server.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">root</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span></pre></div>             </td>           </tr>                                          <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>The top-level namespace. All public Emerson classes and modules will
 be attached to this. Exported for both CommonJS and the browser.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Emerson</span><span class="p">;</span>
   <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">exports</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
@@ -16,12 +16,17 @@ be attached to this. Exported for both CommonJS and the browser.</p>            
 <li>Given an object the current configuration will be extended with that.</li>
 <li>Given a "dot-notated" string a lookup will be performed.</li>
 <li>With no argument a copy of the current configuration will be returned.</li>
+<li>Given a single argument as <code>true</code>, defaults will be restored.</li>
 </ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">Emerson</span><span class="p">.</span><span class="nx">config</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">config</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">arg</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
     <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
 
     <span class="k">if</span><span class="p">(</span><span class="nx">arg</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span><span class="nx">configuration</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="nx">arg</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">configuration</span> <span class="o">=</span> <span class="nx">defaults</span><span class="p">();</span>
     <span class="p">}</span>
 
     <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">arg</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
@@ -36,10 +41,10 @@ be attached to this. Exported for both CommonJS and the browser.</p>            
         <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
       <span class="p">}</span>
 
-      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+      <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">configuration</span><span class="p">,</span> <span class="nx">arg</span><span class="p">);</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">deepExtend</span><span class="p">(</span><span class="nx">configuration</span><span class="p">,</span> <span class="nx">arg</span><span class="p">);</span>
     <span class="p">}</span>
   <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h3 id="init">.init</h3>
 
@@ -56,7 +61,63 @@ names, it will only initialize those.</p>             </td>             <td clas
     <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">modules</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">mod</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">Emerson</span><span class="p">[</span><span class="nx">mod</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">Emerson</span><span class="p">[</span><span class="nx">mod</span><span class="p">].</span><span class="nx">init</span><span class="p">();</span>
     <span class="p">});</span>
-  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h2 id="internalimplementation">Internal Implementation</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h3 id="configuration">configuration</h3>
+  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h2 id="underscoreextension">Underscore Extension</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <h3 id="deepextend">deepExtend</h3>
+
+<ul>
+<li>Author: Kurt Milam - http://xioup.com</li>
+<li>https://gist.github.com/1868955</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">_</span><span class="p">.</span><span class="nx">deepExtend</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">parentRE</span> <span class="o">=</span> <span class="sr">/#{\s*?_\s*?}/</span><span class="p">,</span>
+        <span class="nx">slice</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">,</span>
+        <span class="nx">hasOwnProperty</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">;</span>
+
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="kd">function</span><span class="p">(</span><span class="nx">source</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">prop</span> <span class="k">in</span> <span class="nx">source</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">hasOwnProperty</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">source</span><span class="p">,</span> <span class="nx">prop</span><span class="p">))</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isUndefined</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">]))</span> <span class="p">{</span>
+            <span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">source</span><span class="p">[</span><span class="nx">prop</span><span class="p">];</span>
+          <span class="p">}</span>
+          <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">source</span><span class="p">[</span><span class="nx">prop</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nx">parentRE</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">source</span><span class="p">[</span><span class="nx">prop</span><span class="p">]))</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">]))</span> <span class="p">{</span>
+              <span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">source</span><span class="p">[</span><span class="nx">prop</span><span class="p">].</span><span class="nx">replace</span><span class="p">(</span><span class="nx">parentRE</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">]);</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+          <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">])</span> <span class="o">||</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">source</span><span class="p">[</span><span class="nx">prop</span><span class="p">])){</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">])</span> <span class="o">||</span> <span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">source</span><span class="p">[</span><span class="nx">prop</span><span class="p">])){</span>
+              <span class="k">throw</span> <span class="s1">&#39;Error: Trying to combine an array with a non-array (&#39;</span> <span class="o">+</span> <span class="nx">prop</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+              <span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">deepExtend</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">],</span> <span class="nx">source</span><span class="p">[</span><span class="nx">prop</span><span class="p">]),</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isNull</span><span class="p">(</span><span class="nx">item</span><span class="p">);});</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+          <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">])</span> <span class="o">||</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span><span class="p">(</span><span class="nx">source</span><span class="p">[</span><span class="nx">prop</span><span class="p">])){</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">])</span> <span class="o">||</span> <span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span><span class="p">(</span><span class="nx">source</span><span class="p">[</span><span class="nx">prop</span><span class="p">])){</span>
+              <span class="k">throw</span> <span class="s1">&#39;Error: Trying to combine an object with a non-object (&#39;</span> <span class="o">+</span> <span class="nx">prop</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+              <span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">deepExtend</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">],</span> <span class="nx">source</span><span class="p">[</span><span class="nx">prop</span><span class="p">]);</span>
+            <span class="p">}</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">source</span><span class="p">[</span><span class="nx">prop</span><span class="p">];</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <h2 id="internalimplementation">Internal Implementation</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <h3 id="defaults">defaults</h3>
+
+<p>Default configuration.
+var defaults = {
+  attrs : {
+    view   : 'view',
+    traits : 'traits'
+  }
+};</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">defaults</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="nx">attrs</span> <span class="o">:</span> <span class="p">{</span>
+        <span class="nx">view</span>   <span class="o">:</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span>
+        <span class="nx">traits</span> <span class="o">:</span> <span class="s1">&#39;traits&#39;</span>
+      <span class="p">}</span>
+    <span class="p">};</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <h3 id="configuration">configuration</h3>
 
 <p>Stores library config, with defaults.</p>
 
@@ -75,12 +136,7 @@ supported by way of:</p>
   }
 });
 Emerson.init();
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">configuration</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="nx">attrs</span> <span class="o">:</span> <span class="p">{</span>
-      <span class="nx">view</span>   <span class="o">:</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span>
-      <span class="nx">traits</span> <span class="o">:</span> <span class="s1">&#39;traits&#39;</span>
-    <span class="p">}</span>
-  <span class="p">};</span>
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">configuration</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">deepExtend</span><span class="p">({},</span> <span class="nx">defaults</span><span class="p">());</span>
 <span class="p">}).</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

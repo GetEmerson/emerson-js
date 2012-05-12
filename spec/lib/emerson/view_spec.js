@@ -225,11 +225,9 @@ describe("Emerson.view", function() {
     });
 
     context("when custom data-x attributes have been configured", function() {
-      var original, view, trait, html, other;
+      var view, trait, html, other;
 
       before(function() {
-        original = Emerson.config();
-
         Emerson.config({
           attrs : {
             view   : 'presents',
@@ -250,8 +248,7 @@ describe("Emerson.view", function() {
 
       after(function() {
         // reset
-        Emerson.config(original);
-        Emerson.view.init();
+        Emerson.config(true);
       });
 
       it("handles the custom selectors", function() {

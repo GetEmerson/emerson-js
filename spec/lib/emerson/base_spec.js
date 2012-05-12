@@ -4,15 +4,9 @@ describe("Emerson", function() {
   });
 
   describe(".config", function() {
-    var original;
-
-    before(function() {
-      original = Emerson.config();
-    });
-
     after(function() {
       // reset
-      Emerson.config(original);
+      Emerson.config(true);
     });
 
     it("allows the Emerson to be configured", function() {
@@ -25,6 +19,17 @@ describe("Emerson", function() {
 
       expect(Emerson.config('attrs.view')).toEqual('presents');
       expect(Emerson.config('attrs.traits')).toEqual('behavior');
+    });
+
+    it("does not stomp on non-overriden defaults", function() {
+      Emerson.config({
+        attrs : {
+          view : 'presents'
+        }
+      });
+
+      expect(Emerson.config('attrs.view')).toEqual('presents');
+      expect(Emerson.config('attrs.traits')).toEqual('traits');
     });
   });
 
