@@ -1,4 +1,8 @@
 describe("Emerson.view", function() {
+  before(function() {
+    Emerson.view.init();
+  });
+
   describe(".ns", function() {
     it("references the top-level namespace", function() {
       expect(Emerson.view.ns).toEqual(Emerson);
