@@ -1,13 +1,13 @@
 (function(define) {
-  var view = define(':blue', {
+  var trait = define('blue', {
     initialize : function() {
       this.method();
     }
   });
 
-  view.fn.extend({
+  trait.fn.extend({
     method : function() {
       this.css('color', 'blue');
     }
   });
-})(Emerson.view);
+})(Emerson.trait);

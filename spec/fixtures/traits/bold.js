@@ -1,13 +1,13 @@
 (function(define) {
-  var view = define(':bold', {
+  var trait = define('bold', {
     initialize : function() {
       this.method();
     }
   });
 
-  view.fn.extend({
+  trait.fn.extend({
     method : function() {
       this.css('font-weight', 'bold');
     }
   });
-})(Emerson.view);
+})(Emerson.trait);

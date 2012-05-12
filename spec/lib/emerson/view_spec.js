@@ -104,10 +104,10 @@ describe("Emerson.view", function() {
       });
     });
 
-    context("given a trait match", function() {
+    context("given a simple trait match", function() {
       before(function() {
-        view = fixture('views/shared/blank-trait.js');
-        html = fixture('views/shared/blank-trait.html');
+        view = fixture('traits/blank.js');
+        html = fixture('traits/blank.html');
       });
 
       it("calls #initialize", function() {
@@ -127,13 +127,28 @@ describe("Emerson.view", function() {
       });
     });
 
+    describe("given a trait match with a 'mode'", function() {
+      before(function() {
+        view = fixture('traits/with-mode.js');
+        html = fixture('traits/with-mode.html');
+      });
+
+      it("calls #initialize with the mode as an argument", function() {
+        var spy = spyOn(view.setup, 'initialize');
+
+        $(html).view();
+        expect(spy).toHaveBeenCalled();
+        expect(spy.mostRecentCall.args[0]).toEqual('mode');
+      });
+    });
+
     context("given multiple trait matches", function() {
       var view_1, view_2, html, instance;
 
       before(function() {
-        view_1 = fixture('views/shared/blue-trait.js');
-        view_2 = fixture('views/shared/bold-trait.js');
-        html   = fixture('views/shared/dual-traits.html');
+        view_1 = fixture('traits/blue.js');
+        view_2 = fixture('traits/bold.js');
+        html   = fixture('traits/dual.html');
       });
 
       it("calls #initialize for both traits", function() {
@@ -158,8 +173,8 @@ describe("Emerson.view", function() {
       var view, html;
 
       before(function() {
-        view = fixture('views/shared/blue-trait.js');
-        html = fixture('views/shared/dual-traits.html');
+        view = fixture('traits/blue.js');
+        html = fixture('traits/dual.html');
         var one = $(html).attr('id', 'html-1');
         var two = $(html).attr('id', 'html-2');
 
@@ -187,7 +202,7 @@ describe("Emerson.view", function() {
 
       before(function() {
         view      = fixture('views/simple.js');
-        trait     = fixture('views/shared/blue-trait.js');
+        trait     = fixture('traits/blue.js');
         container = $('<div>');
         container.html(fixture('views/with-trait.html'));
       });
@@ -225,7 +240,7 @@ describe("Emerson.view", function() {
         Emerson.view.init();
 
         view  = fixture('views/simple.js');
-        trait = fixture('views/shared/blank-trait.js');
+        trait = fixture('traits/blank.js');
         html  = fixture('views/selectors.html');
         other = fixture('views/simple.html');
 
