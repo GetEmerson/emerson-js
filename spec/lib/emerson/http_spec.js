@@ -35,7 +35,6 @@ describe("Emerson.http", function() {
   describe("event handling", function() {
     before(function() {
       spyOn($.fn, 'sink').andCallThrough();
-      spyOn($.fn, 'view').andCallThrough();
     });
 
     context("when Emerson.sink is not loaded", function() {
@@ -85,12 +84,6 @@ describe("Emerson.http", function() {
           ];
         });
 
-        it("calls $.fn.view with the response content", function() {
-          $(document).trigger('ajax:success', args);
-          expect($.fn.view).toHaveBeenCalled();
-          expect($.fn.view.mostRecentCall.object).toBe('article[data-sink]');
-        });
-
         it("calls $.fn.sink with the response content", function() {
           $(document).trigger('ajax:success', args);
           expect($.fn.sink).toHaveBeenCalled();
@@ -109,12 +102,6 @@ describe("Emerson.http", function() {
               })
             }, 200, 'error'
           ];
-        });
-
-        it("calls $.fn.view with the response content", function() {
-          $(document).trigger('ajax:error', args);
-          expect($.fn.view).toHaveBeenCalled();
-          expect($.fn.view.mostRecentCall.object).toBe('article[data-sink]');
         });
 
         it("calls $.fn.sink with the response content", function() {
