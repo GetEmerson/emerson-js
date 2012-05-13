@@ -20,19 +20,45 @@ Adds...
 <li>fire "sink:before" with the sink as the target.</li>
 <li>replace the sink with a "prepared" replacement.</li>
 <li>fire "sink:after" with the replacement as the target.</li>
-</ol>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">sink</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</ol>
+
+<p>Note that, while this method will handle multiple sinks, it does so by
+cloning the source, thereby breaking the chain.  It's probably a good idea
+to have one-to-one matches, but the multiple match option could be good
+for doing something along the lines of updating an avatar that is rendered
+many times on the page.  The <code>sink:after</code> event may be used to manipulate
+the resultant nodes.</p>
+
+<p>Pass an <code>override</code> argument to target a specific sink, say:</p>
+
+<pre><code>data-sink="modal"
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">sink</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">override</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">elem</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">key</span>  <span class="o">=</span> <span class="nx">elem</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;sink&#39;</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">key</span>  <span class="o">=</span> <span class="nx">override</span> <span class="o">||</span> <span class="nx">elem</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;sink&#39;</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">matches</span><span class="p">;</span>
 
       <span class="k">if</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;[data-sink=&quot;&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;&quot;]&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-          <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
-            <span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;sink:before&#39;</span><span class="p">)</span>
-            <span class="p">.</span><span class="nx">replaceWith</span><span class="p">(</span><span class="nx">prepare</span><span class="p">(</span><span class="nx">elem</span><span class="p">));</span>
-        <span class="p">});</span>
+        <span class="nx">selector</span> <span class="o">=</span> <span class="s1">&#39;[data-sink=&quot;&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;&quot;]&#39;</span><span class="p">;</span>
+        <span class="nx">matches</span>  <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">selector</span><span class="p">);</span>
 
-        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;[data-sink=&quot;&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;&quot;]&#39;</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;sink:after&#39;</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">matches</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">matches</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">replacement</span> <span class="o">=</span> <span class="nx">prepare</span><span class="p">(</span><span class="nx">elem</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span><span class="kc">true</span><span class="p">));</span>
+
+            <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+              <span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;sink:before&#39;</span><span class="p">)</span>
+              <span class="p">.</span><span class="nx">replaceWith</span><span class="p">(</span><span class="nx">replacement</span><span class="p">);</span>
+
+            <span class="nx">replacement</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;sink:after&#39;</span><span class="p">);</span>
+          <span class="p">});</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">matches</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;sink:before&#39;</span><span class="p">);</span>
+          <span class="nx">prepare</span><span class="p">(</span><span class="nx">elem</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">replaceAll</span><span class="p">(</span><span class="nx">matches</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;sink:after&#39;</span><span class="p">);</span>
+        <span class="p">}</span>
       <span class="p">}</span>
     <span class="p">});</span>
 
@@ -40,7 +66,7 @@ Adds...
   <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h2 id="internalimplementation">Internal Implementation</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h3 id="prepare">prepare</h3>
 
 <p>Clone the replacement source and, if Emerson.view is defined, apply that.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">prepare</span><span class="p">(</span><span class="nx">source</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">source</span><span class="p">.</span><span class="nx">clone</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">source</span><span class="p">;</span>
 
     <span class="k">if</span><span class="p">(</span><span class="nx">Emerson</span><span class="p">.</span><span class="nx">view</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">result</span><span class="p">.</span><span class="nx">view</span><span class="p">();</span>
