@@ -119,6 +119,26 @@ describe("Emerson.sink", function() {
         expect(handler).not.toHaveBeenCalled();
       });
     });
+
+    context("given an override to target a specific sink", function() {
+      before(function() {
+        sink    = fixture('views/simple.html', true);
+        html    = '<article data-view="simple" data-sink="MISMATCH">updated content</article>';
+        wrapper = sink.parent();
+      });
+
+      it("replaces the sink", function() {
+        var original, replacement;
+        original = wrapper.find('article');
+        expect(original).toHaveText(/\s*original content\s*/);
+        expect(original).toHaveAttr('data-sink', 'key');
+
+        $(html).sink('key');
+        replacement = wrapper.find('article');
+        expect(replacement).toHaveText(/\s*updated content\s*/);
+        expect(replacement).toHaveAttr('data-sink', 'MISMATCH');
+      });
+    });
   });
 
   describe(".ns", function() {
