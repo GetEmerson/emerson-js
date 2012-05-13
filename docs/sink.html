@@ -12,19 +12,42 @@ Adds...
   <span class="p">});</span></pre></div>             </td>           </tr>                                          <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <h2 id="baselibaryextension">"Base" Libary Extension</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Make a local copy of Emerson.base. e.g., one of jQuery, Zepto or Ender.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">$</span> <span class="o">=</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">base</span><span class="p">;</span></pre></div>             </td>           </tr>                                          <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <h3 id="dfnsink">$.fn.sink</h3>
 
 <pre><code>$(target).sink()
-</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">sink</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</code></pre>
+
+<p>Given "replacement" content and for each "sink" (existing content):</p>
+
+<ol>
+<li>fire "sink:before" with the sink as the target.</li>
+<li>replace the sink with a "prepared" replacement.</li>
+<li>fire "sink:after" with the replacement as the target.</li>
+</ol>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">sink</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">elem</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
       <span class="kd">var</span> <span class="nx">key</span>  <span class="o">=</span> <span class="nx">elem</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;sink&#39;</span><span class="p">);</span>
 
       <span class="k">if</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">elem</span><span class="p">.</span><span class="nx">replaceAll</span><span class="p">(</span><span class="s1">&#39;[data-sink=&quot;&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;&quot;]&#39;</span><span class="p">,</span> <span class="s1">&#39;body&#39;</span><span class="p">);</span>
-        <span class="nx">elem</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;sink:after&#39;</span><span class="p">);</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;[data-sink=&quot;&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;&quot;]&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+          <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;sink:before&#39;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">replaceWith</span><span class="p">(</span><span class="nx">prepare</span><span class="p">(</span><span class="nx">elem</span><span class="p">));</span>
+        <span class="p">});</span>
+
+        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;[data-sink=&quot;&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;&quot;]&#39;</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;sink:after&#39;</span><span class="p">);</span>
       <span class="p">}</span>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                                          <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <h2 id="internalimplementation">Internal Implementation</h2>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                                          <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <h3 id="prepare">prepare</h3>
+
+<p>Clone the replacement source and, if Emerson.view is defined, apply that.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">prepare</span><span class="p">(</span><span class="nx">source</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">source</span><span class="p">.</span><span class="nx">clone</span><span class="p">();</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="nx">Emerson</span><span class="p">.</span><span class="nx">view</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">view</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">}</span>
 <span class="p">})(</span><span class="nx">Emerson</span><span class="p">);</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

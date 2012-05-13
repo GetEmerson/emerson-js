@@ -3,8 +3,10 @@ describe("Emerson.sink", function() {
     var sink, html, wrapper;
 
     before(function() {
+      Emerson.view.init();
+
       sink    = fixture('views/simple.html', true);
-      html    = '<article data-sink="key">updated content</article>';
+      html    = '<article data-view="simple" data-sink="key">updated content</article>';
       wrapper = sink.parent();
     });
 
@@ -13,20 +15,42 @@ describe("Emerson.sink", function() {
     });
 
     context("when an existing 'sink' matches the outer element", function() {
-      var calls;
+      var calls, beforeEvent, afterEvent;
 
       before(function() {
         Emerson.sink.init();
         calls = [];
 
-        var spy = spyOn($.fn, 'replaceAll').andCallFake(function() {
+        var spyOne = spyOn($.fn, 'replaceWith').andCallFake(function() {
           calls.push('actual');
-          spy.originalValue.apply(this, arguments);
+          spyOne.originalValue.apply(this, arguments);
         });
 
-        wrapper.bind('sink:after', function() {
+        var spyTwo = spyOn($.fn, 'view').andCallFake(function() {
+          calls.push('during');
+          spyTwo.originalValue.apply(this, arguments);
+        });
+
+        wrapper.bind('sink:before', function(e) {
+          beforeEvent = e;
+          calls.push('before');
+        });
+
+        wrapper.bind('sink:after', function(e) {
+          afterEvent = e;
           calls.push('after');
         });
+      });
+
+      it("fires the before event, with the original as target", function() {
+        $(html).sink();
+        expect($(beforeEvent.target)).toHaveText(/\s*original content\s*/);
+      });
+
+      it("calls $.fn.view, with the replacement as subject", function() {
+        $(html).sink();
+        expect($.fn.view).toHaveBeenCalled();
+        expect($.fn.view.mostRecentCall.object).toHaveText(/\s*updated content\s*/);
       });
 
       it("replaces the sink", function() {
@@ -36,9 +60,39 @@ describe("Emerson.sink", function() {
         expect(wrapper.find('article')).toHaveText(/\s*updated content\s*/);
       });
 
-      it("fires the after event, in the appropriate order", function() {
+      it("fires the after event, with the replacement as target", function() {
         $(html).sink();
-        expect(calls).toEqual(['actual', 'after']);
+        expect($(afterEvent.target)).toHaveText(/\s*updated content\s*/);
+      });
+
+      it("executes the before, view, relace, and after in order", function() {
+        $(html).sink();
+        expect(calls).toEqual(['before', 'during', 'actual', 'after']);
+      });
+    });
+
+    context("when multiple existing 'sinks' match the outer element", function() {
+      before(function() {
+        sink.attr('class', 'one');
+        wrapper.append(sink.clone().attr('class', 'two'));
+      });
+
+      it("replaces the sinks", function() {
+        var articles;
+
+        articles = wrapper.find('article');
+        expect(articles.length).toEqual(2);
+        expect(articles.eq(0)).toHaveText(/\s*original content\s*/);
+        expect(articles.eq(1)).toHaveText(/\s*original content\s*/);
+        expect(articles[0]._emerson).not.toBeDefined();
+        expect(articles[1]._emerson).not.toBeDefined();
+
+        $(html).sink();
+        articles = wrapper.find('article');
+        expect(articles.eq(0)).toHaveText(/\s*updated content\s*/);
+        expect(articles.eq(1)).toHaveText(/\s*updated content\s*/);
+        expect(articles[0]._emerson).toBeGreaterThan(0);
+        expect(articles[1]._emerson).toEqual(1 + articles[0]._emerson);
       });
     });
 
