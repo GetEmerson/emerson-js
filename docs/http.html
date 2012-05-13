@@ -42,10 +42,10 @@ Adds...
   <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <h3 id="sink">sink</h3>
 
 <pre><code>json: &lt;response [action, data, path, view]&gt;
-html: &lt;response&gt; (string)
-head: &lt;response&gt; single space string
+html: &lt;response&gt; (string) ... TODO
+head: &lt;response&gt; single space string ... TODO
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">sink</span><span class="p">(</span><span class="nx">response</span><span class="p">,</span> <span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">$</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">view</span><span class="p">).</span><span class="nx">view</span><span class="p">().</span><span class="nx">sink</span><span class="p">();</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">view</span><span class="p">).</span><span class="nx">sink</span><span class="p">();</span>
   <span class="p">}</span>
 <span class="p">})(</span><span class="nx">Emerson</span><span class="p">);</span>
 
