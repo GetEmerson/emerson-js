@@ -1,6 +1,6 @@
 describe("Emerson", function() {
   it("is the expected version", function() {
-    expect(Emerson.VERSION).toEqual('0.0.6');
+    expect(Emerson.VERSION).toEqual('0.0.7');
   });
 
   describe(".config", function() {
