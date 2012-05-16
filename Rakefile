@@ -31,7 +31,7 @@ task :'doc:commit' => :doc do
   `git checkout gh-pages`
   `rm -rdf docs`
   `mv docs.for_commit docs`
-  `git add -A`
+  `git add -A docs`
   `git commit -m "update documentation"`
   `git push origin gh-pages`
   `git checkout master`
