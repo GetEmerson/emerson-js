@@ -1,3 +1,3 @@
 # Emerson
 
-  > ...believes in the inherent goodness of both developer and code.
+  > <http://coreyti.github.com/emerson-js/>
