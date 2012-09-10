@@ -137,14 +137,33 @@ a given instance indicates which nodes should match for the View.</p></li>
 <li>A "subclass", extended with the View prototype.</li>
 </ol>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">construct</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">setup</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">sub</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">$sub</span><span class="p">(),</span> <span class="p">{</span>
-      <span class="nx">constructor</span> <span class="o">:</span> <span class="nx">View</span><span class="p">,</span>
-      <span class="nx">setup</span>       <span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({},</span> <span class="nx">View</span><span class="p">.</span><span class="nx">setup</span><span class="p">,</span> <span class="nx">setup</span><span class="p">)</span>
+      <span class="nx">constructor</span>  <span class="o">:</span> <span class="nx">View</span><span class="p">,</span>
+      <span class="nx">setup</span>        <span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+        <span class="nx">initialize</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{},</span>
+        <span class="nx">connected</span>  <span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nx">subscribe</span>  <span class="o">:</span> <span class="p">{},</span>
+      <span class="p">},</span> <span class="nx">setup</span><span class="p">),</span></pre></div>             </td>           </tr>                                          <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>experimental... allows for easier spec'ing of a view/trait</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">build</span> <span class="o">:</span> <span class="kd">function</span> <span class="nx">build</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">mode</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">instance</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">mode</span><span class="p">);</span>
+      <span class="p">}</span>
     <span class="p">});</span>
 
     <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">sub</span><span class="p">.</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">View</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">sub</span><span class="p">;</span>
-  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <h3 id="attach">attach</h3>
+  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <h3 id="instance">instance</h3>
+
+<p>experimental (see <code>build</code> definition in <code>construct</code>).</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">function</span> <span class="nx">instance</span><span class="p">(</span><span class="nx">def</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">mode</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">setup</span> <span class="o">=</span> <span class="nx">def</span><span class="p">.</span><span class="nx">setup</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">built</span> <span class="o">=</span> <span class="nx">def</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">element</span><span class="p">.</span><span class="nx">context</span><span class="p">);</span>
+    <span class="nx">built</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="nx">setup</span><span class="p">.</span><span class="nx">connected</span><span class="p">);</span>
+
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">setup</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">handler</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">bind</span><span class="p">(</span><span class="nx">built</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="nx">setup</span><span class="p">.</span><span class="nx">initialize</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">built</span><span class="p">,</span> <span class="nx">mode</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">built</span><span class="p">;</span>
+  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <h3 id="attach">attach</h3>
 
 <p>Given a (complex) list of keys, search the libraries for applicable View
 and Trait definitions to apply to the object.</p>
@@ -176,22 +195,20 @@ a "mode", which should be true for traits (not for views).</p>             </td>
 
       <span class="k">if</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">include</span><span class="p">(</span><span class="nx">set</span><span class="p">,</span> <span class="nx">id</span><span class="p">))</span> <span class="p">{</span>
         <span class="k">return</span><span class="p">;</span> <span class="c1">// do not re-apply.</span>
-      <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Build an instance, connect outlets, bind events, init and record.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span><span class="p">(</span><span class="nx">def</span> <span class="o">=</span> <span class="nx">library</span><span class="p">[</span><span class="nx">key</span><span class="p">])</span> <span class="p">{</span>
-        <span class="nx">setup</span> <span class="o">=</span> <span class="nx">def</span><span class="p">.</span><span class="nx">setup</span><span class="p">;</span>
-        <span class="nx">built</span> <span class="o">=</span> <span class="nx">def</span><span class="p">(</span><span class="nx">self</span><span class="p">,</span> <span class="nx">self</span><span class="p">.</span><span class="nx">context</span><span class="p">);</span>
-        <span class="nx">built</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="nx">setup</span><span class="p">.</span><span class="nx">connected</span><span class="p">);</span>
+      <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>Build an instance, connect outlets, bind events, init and record.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span><span class="p">(</span><span class="nx">def</span> <span class="o">=</span> <span class="nx">library</span><span class="p">[</span><span class="nx">key</span><span class="p">])</span> <span class="p">{</span></pre></div>             </td>           </tr>                                          <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>experimental...</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">instance</span><span class="p">(</span><span class="nx">def</span><span class="p">,</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">mode</span><span class="p">);</span></pre></div>             </td>           </tr>                                          <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>setup = def.setup;
+built = def(self, self.context);
+built.connect(setup.connected);</p>
 
-        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">setup</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">handler</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
-          <span class="nx">bind</span><span class="p">(</span><span class="nx">built</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
-        <span class="p">});</span>
+<p>_.each(setup.subscribe, function(handler, key) {
+  bind(built, key, handler);
+});</p>
 
-        <span class="nx">setup</span><span class="p">.</span><span class="nx">initialize</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">built</span><span class="p">,</span> <span class="nx">mode</span><span class="p">);</span>
-        <span class="nx">set</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+<p>setup.initialize.call(built, mode);</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">set</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
       <span class="p">}</span>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <h3 id="bind">bind</h3>
+  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <h3 id="bind">bind</h3>
 
 <p>Attach event handler(s).</p>
 
@@ -209,6 +226,9 @@ a "mode", which should be true for traits (not for views).</p>             </td>
         'click'   : handler
       }
     },
+    window        : {            // bind window, for events
+      'scroll'    : handler      // fired outside of the view
+    },
     'outlet:name' : {            // a custom key to specify a
       'click' : handler          // defined outlet as the scope
     }
@@ -221,9 +241,9 @@ a "mode", which should be true for traits (not for views).</p>             </td>
 event argument is unadultered, allowing access to the full set of targets
 as defined by the baselib (e.g., jQuery).</p>
 
-<p><strong>Special notes regarding document-bound handlers</strong>:</p>
+<p><strong>Special notes regarding document-/window-bound handlers</strong>:</p>
 
-<p>Binding an event like <code>click</code> (without selector scope) to the document
+<p>Binding an event like <code>click</code> (without selector scope) to document/window
 would likely be a bad idea.  A more useful (and less costly) use case
 would be a sort of pub/sub.  For example, view "A" could trigger an event
 indicating that it has rendered a new instance, to which "B" (elsewhere)
@@ -235,6 +255,11 @@ up when the associated view instance is removed.</p>             </td>          
       <span class="k">if</span><span class="p">(</span><span class="nx">key</span> <span class="o">===</span> <span class="s1">&#39;document&#39;</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">handler</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">subhandler</span><span class="p">,</span> <span class="nx">subkey</span><span class="p">)</span> <span class="p">{</span>
           <span class="nx">bind</span><span class="p">(</span><span class="nx">instance</span><span class="p">,</span> <span class="nx">subkey</span><span class="p">,</span> <span class="nx">subhandler</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">));</span>
+        <span class="p">});</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">key</span> <span class="o">===</span> <span class="s1">&#39;window&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">handler</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">subhandler</span><span class="p">,</span> <span class="nx">subkey</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">bind</span><span class="p">(</span><span class="nx">instance</span><span class="p">,</span> <span class="nx">subkey</span><span class="p">,</span> <span class="nx">subhandler</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">));</span>
         <span class="p">});</span>
       <span class="p">}</span>
       <span class="k">else</span> <span class="p">{</span>
@@ -252,7 +277,7 @@ up when the associated view instance is removed.</p>             </td>          
         <span class="k">return</span> <span class="nx">handler</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">instance</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
       <span class="p">});</span>
     <span class="p">}</span>
-  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <h3 id="dsub">$sub</h3>
+  <span class="p">}</span></pre></div>             </td>           </tr>                                          <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <h3 id="dsub">$sub</h3>
 
 <p>Basically a copy of jQuery.sub, but more generic and with changes to:</p>
 
