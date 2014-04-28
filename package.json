@@ -3,6 +3,10 @@
   "description" : "transcendent views",
   "version"     : "0.0.10",
   "author"      : "Corey Innis <corey@coolerator.net> (https://coolerator.net)",
+  "contributors": [
+    "Rachel Heaton <rachelmheaton@gmail.com> (http://www.forthemakers.com/)",
+    "Doug Rohrer <doug@therohrers.org> (http://jeetkundoug.wordpress.com/)"
+  ],
   "homepage"    : "http://coreyti.github.com/emerson-js",
   "repository"  : {
     "type"      : "git",
