@@ -1,7 +1,7 @@
-source :rubygems
+source 'https://rubygems.org'
 
 group :development do
-  gem 'jasmine', '1.2.0.rc3'
+  gem 'jasmine'
   gem 'guard'
   gem 'guard-rake'
   gem 'serve-this'
