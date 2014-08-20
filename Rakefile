@@ -1,18 +1,9 @@
-require 'rubygems'
+require 'jasmine'
+load 'jasmine/tasks/jasmine.rake'
 
 task :default => :spec
 
-desc "run the spec suite"
-task :spec => [:'spec:server', :'spec:browser']
-
-desc "run the 'server' spec suite"
-task :'spec:server' do
-  check 'jasmine-node', 'jasmine-node', 'https://github.com/mhevery/jasmine-node'
-  system 'jasmine-node spec'
-end
-
-desc "run the 'browser' spec suite"
-task :'spec:browser' => :'jasmine:server'
+task :spec => [:jasmine]
 
 desc "build the docco documentation"
 task :doc do
@@ -55,11 +46,3 @@ def hide(taskname)
   # sneaky
   task(taskname).instance_variable_set(:"@name", nil)
 end
-
-$LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'spec/support')
-require 'jasmine'
-require 'jasmine/patches'
-
-load 'jasmine/tasks/jasmine.rake'
-hide('jasmine')
-hide('jasmine:ci')

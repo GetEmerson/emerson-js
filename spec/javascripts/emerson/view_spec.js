@@ -15,7 +15,7 @@ describe("Emerson.view", function() {
 
       Emerson.view.init();
       expect($.fn.view).toHaveBeenCalled();
-      expect($.fn.view.mostRecentCall.object[0]).toEqual($('body')[0]);
+      expect($.fn.view.calls.mostRecent().object[0]).toEqual($('body')[0]);
     });
   });
 
@@ -50,7 +50,7 @@ describe("Emerson.view", function() {
         });
 
         it("throws an exception", function() {
-          spyOn(view.setup, 'initialize').andCallFake(function() {
+          spyOn(view.setup, 'initialize').and.callFake(function() {
             this.fails();
           });
 
@@ -100,7 +100,7 @@ describe("Emerson.view", function() {
 
         instance.view();
         instance.view();
-        expect(view.setup.initialize.callCount).toEqual(1);
+        expect(view.setup.initialize.calls.count()).toEqual(1);
       });
     });
 
@@ -123,7 +123,7 @@ describe("Emerson.view", function() {
 
         instance.view();
         instance.view();
-        expect(view.setup.initialize.callCount).toEqual(1);
+        expect(view.setup.initialize.calls.count()).toEqual(1);
       });
     });
 
@@ -138,7 +138,7 @@ describe("Emerson.view", function() {
 
         $(html).view();
         expect(spy).toHaveBeenCalled();
-        expect(spy.mostRecentCall.args[0]).toEqual('mode');
+        expect(spy.calls.mostRecent().args[0]).toEqual('mode');
       });
     });
 
@@ -179,21 +179,21 @@ describe("Emerson.view", function() {
         var two = $(html).attr('id', 'html-2');
 
         setFixtures(one.add(two));
-        expect($('#html-1')).toBe('article');
-        expect($('#html-2')).toBe('article');
+        expect($('#html-1')).toBeMatchedBy('article');
+        expect($('#html-2')).toBeMatchedBy('article');
       });
 
       it("calls #initialize for both DOM matches", function() {
-        spyOn(view.setup, 'initialize').andCallThrough();
+        spyOn(view.setup, 'initialize').and.callThrough();
 
         $('article').view();
-        expect(view.setup.initialize.callCount).toEqual(2);
+        expect(view.setup.initialize.calls.count()).toEqual(2);
       });
 
       it("modifies both DOM matches", function() {
         $('article').view();
-        expect($('#html-1')).toHaveCss({ 'color' : 'blue' });
-        expect($('#html-2')).toHaveCss({ 'color' : 'blue' });
+        expect($('#html-1')).toHaveCss({ 'color' : 'rgb(0, 0, 255)' });
+        expect($('#html-2')).toHaveCss({ 'color' : 'rgb(0, 0, 255)' });
       });
     });
 
@@ -426,9 +426,8 @@ describe("Emerson.view", function() {
 
         it("is called with `this` as the view instance", function() {
           link.trigger('click');
-          object = handler.mostRecentCall.object;
-
-          expect(object).toBe('article');
+          object = handler.calls.mostRecent().object;
+          expect(object).toBeMatchedBy('article');
           expect(object[0]).toEqual(instance[0]);
         });
       });
@@ -447,7 +446,7 @@ describe("Emerson.view", function() {
         it("works", function() {
           link.trigger('click');
           link.trigger('mouseover');
-          expect(handler.callCount).toEqual(2);
+          expect(handler.calls.count()).toEqual(2);
         });
       });
 

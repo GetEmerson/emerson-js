@@ -18,17 +18,22 @@ describe("Emerson.sink", function() {
       var calls, beforeEvent, afterEvent;
 
       before(function() {
+        var original = {
+          'replaceWith' : $.fn.replaceWith,
+          'view'        : $.fn.view
+        };
+
         Emerson.sink.init();
         calls = [];
 
-        var spyOne = spyOn($.fn, 'replaceWith').andCallFake(function() {
+        var spyOne = spyOn($.fn, 'replaceWith').and.callFake(function() {
           calls.push('actual');
-          spyOne.originalValue.apply(this, arguments);
+          original.replaceWith.apply(this, arguments);
         });
 
-        var spyTwo = spyOn($.fn, 'view').andCallFake(function() {
+        var spyTwo = spyOn($.fn, 'view').and.callFake(function() {
           calls.push('during');
-          spyTwo.originalValue.apply(this, arguments);
+          original.view.apply(this, arguments);
         });
 
         wrapper.bind('sink:before', function(e) {
@@ -50,7 +55,7 @@ describe("Emerson.sink", function() {
       it("calls $.fn.view, with the replacement as subject", function() {
         $(html).sink();
         expect($.fn.view).toHaveBeenCalled();
-        expect($.fn.view.mostRecentCall.object).toHaveText(/\s*updated content\s*/);
+        expect($.fn.view.calls.mostRecent().object).toHaveText(/\s*updated content\s*/);
       });
 
       it("replaces the sink", function() {
@@ -148,7 +153,7 @@ describe("Emerson.sink", function() {
   });
 
   describe(".init", function() {
-    it("doesn't do much at the moment", function() {
+    xit("doesn't do much at the moment", function() {
       //
     });
   });

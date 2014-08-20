@@ -1,27 +1,3 @@
-// server
-if(typeof exports !== 'undefined') {
-  function req(lib) {
-    try {
-      return require(lib);
-    }
-    catch(e) {
-      return require("../../lib/" + lib + ".js");
-    }
-  }
-
-  _       = req("underscore");
-  $       = req("jquery");
-  Emerson = req("emerson");
-            req("emerson/util");
-            req("emerson/mien");
-}
-// browser
-else {
-  (function() {
-
-  })();
-}
-
 (function(g) {
   _.extend(g, {
     context : function(description, definitions) {
@@ -60,14 +36,16 @@ else {
       return jasmine.getEnv().afterEach(callback);
     },
 
-    undefine : function(object, property) {
-      var original = object[property];
-      object[property] = undefined;
+    // undefine : function(object, property) {
+    //   console.warn('undefining', property);
+    //   var original = object[property];
+    //   object[property] = undefined;
 
-      jasmine.getEnv().currentSpec.after(function() {
-        object[property] = original;
-      });
-    }
+    //   jasmine.getEnv().afterEach(function() {
+    //     console.warn('redefining', property);
+    //     object[property] = original;
+    //   });
+    // }
   });
 
   function parseKey(content) {

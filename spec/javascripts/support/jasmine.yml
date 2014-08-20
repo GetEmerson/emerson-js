@@ -16,7 +16,6 @@ src_files:
   - lib/emerson/base.js
   - lib/emerson/util.js
   - lib/emerson/**/*.js
-  - lib/**/*.js
 
 # stylesheets
 #
@@ -30,7 +29,7 @@ src_files:
 #   - stylesheets/*.css
 #
 stylesheets:
-  - spec/helpers/**/*.css
+  - stylesheets/**/*.css
 
 # helpers
 #
@@ -43,11 +42,11 @@ stylesheets:
 #   - helpers/**/*.js
 #
 helpers:
-  - helpers/**/*.js
+  - 'helpers/**/*.js'
 
 # spec_files
 #
-#  Return an array of filepaths relative to spec_dir to include.
+# Return an array of filepaths relative to spec_dir to include.
 # Default: ["**/*[sS]pec.js"]
 #
 # EXAMPLE:
@@ -56,6 +55,7 @@ helpers:
 #   - **/*[sS]pec.js
 #
 spec_files:
+  - '**/*[sS]pec.js'
 
 # src_dir
 #
@@ -77,4 +77,52 @@ src_dir:
 #
 # spec_dir: spec/javascripts
 #
-spec_dir: spec
+spec_dir:
+
+# spec_helper
+#
+# Ruby file that Jasmine server will require before starting.
+# Returned relative to your root path
+# Default spec/javascripts/support/jasmine_helper.rb
+#
+# EXAMPLE:
+#
+# spec_helper: spec/javascripts/support/jasmine_helper.rb
+#
+spec_helper: spec/javascripts/support/jasmine_helper.rb
+
+# boot_dir
+#
+# Boot directory path. Your boot_files must be returned relative to this path.
+# Default: Built in boot file
+#
+# EXAMPLE:
+#
+# boot_dir: spec/javascripts/support/boot
+#
+boot_dir:
+
+# boot_files
+#
+# Return an array of filepaths relative to boot_dir to include in order to boot Jasmine
+# Default: Built in boot file
+#
+# EXAMPLE
+#
+# boot_files:
+#   - '**/*.js'
+#
+boot_files:
+
+# rack_options
+#
+# Extra options to be passed to the rack server
+# by default, Port and AccessLog are passed.
+#
+# This is an advanced options, and left empty by default
+#
+# EXAMPLE
+#
+# rack_options:
+#   server: 'thin'
+

@@ -34,13 +34,22 @@ describe("Emerson.http", function() {
 
   describe("event handling", function() {
     before(function() {
-      spyOn($.fn, 'sink').andCallThrough();
+      spyOn($.fn, 'sink').and.callThrough();
     });
 
     context("when Emerson.sink is not loaded", function() {
+      var original;
+
       before(function() {
-        undefine(Emerson, 'sink');
+        // undefine(Emerson, 'sink');
+        original = Emerson.sink;
+        Emerson.sink = undefined;
+
         Emerson.http.init();
+      });
+
+      after(function() {
+        Emerson.sink = original;
       });
 
       it("does not 'sink' on `ajax:success`", function() {
@@ -87,7 +96,7 @@ describe("Emerson.http", function() {
         it("calls $.fn.sink with the response content", function() {
           $(document).trigger('ajax:success', args);
           expect($.fn.sink).toHaveBeenCalled();
-          expect($.fn.sink.mostRecentCall.object).toBe('article[data-sink]');
+          expect($.fn.sink.calls.mostRecent().object).toBeMatchedBy('article[data-sink]');
         });
       });
 
@@ -107,7 +116,7 @@ describe("Emerson.http", function() {
         it("calls $.fn.sink with the response content", function() {
           $(document).trigger('ajax:error', args);
           expect($.fn.sink).toHaveBeenCalled();
-          expect($.fn.sink.mostRecentCall.object).toBe('article[data-sink]');
+          expect($.fn.sink.calls.mostRecent().object).toBeMatchedBy('article[data-sink]');
         });
       });
     });
