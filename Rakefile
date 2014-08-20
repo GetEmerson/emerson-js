@@ -1,6 +1,9 @@
-require 'rubygems'
+require 'jasmine'
+load 'jasmine/tasks/jasmine.rake'
 
 task :default => :spec
+
+task :spec => [:jasmine]
 
 desc "build the docco documentation"
 task :doc do
@@ -43,11 +46,3 @@ def hide(taskname)
   # sneaky
   task(taskname).instance_variable_set(:"@name", nil)
 end
-
-$LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'spec/support')
-require 'jasmine'
-require 'jasmine/patches'
-
-load 'jasmine/tasks/jasmine.rake'
-hide('jasmine')
-hide('jasmine:ci')
