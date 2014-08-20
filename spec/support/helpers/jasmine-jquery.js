@@ -44,7 +44,7 @@
   jasmine.Fixtures = function() {
     this.containerId = 'jasmine-fixtures';
     this.fixturesCache_ = {};
-    this.fixturesPath = 'spec/fixtures';
+    this.fixturesPath = 'spec/support/fixtures';
   };
 
   jasmine.Fixtures.prototype.set = function(html) {
