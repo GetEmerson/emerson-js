@@ -2,18 +2,6 @@ require 'rubygems'
 
 task :default => :spec
 
-desc "run the spec suite"
-task :spec => [:'spec:server', :'spec:browser']
-
-desc "run the 'server' spec suite"
-task :'spec:server' do
-  check 'jasmine-node', 'jasmine-node', 'https://github.com/mhevery/jasmine-node'
-  system 'jasmine-node spec'
-end
-
-desc "run the 'browser' spec suite"
-task :'spec:browser' => :'jasmine:server'
-
 desc "build the docco documentation"
 task :doc do
   # NOTE: we currently use a fork of docco, which supports cli flags and more.
