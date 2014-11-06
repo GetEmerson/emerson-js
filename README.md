@@ -1,6 +1,7 @@
 # Emerson
 
-  > <http://coreyti.github.com/emerson-js/>
+  > See <https://coreyti.github.com/emerson-js/> for the JS code-based docs.
+  > See <https://github.com/coreyti/emerson> for philosophy/theory and Ruby/Rails.
 
 ## Credits
 
